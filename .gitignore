@@ -1,0 +1,52 @@
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# Dependency lock files
+package-lock.json
+yarn.lock
+
+# Build artifacts
+build/
+prod/
+dist/
+*.log
+*.pid
+
+# IDE specific files
+.vscode/
+.idea/
+*.sublime*
+*.swp
+
+# Test coverage
+coverage/
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+
+# User specific files
+*.log
+*.log.*
+*.pid
+*.seed
+*.pid.lock
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.cache
+*.DS_Store
+
+# OS generated files
+Thumbs.db
+.DS_Store
+src/config.json
+src/others

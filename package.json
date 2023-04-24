@@ -1,0 +1,20 @@
+{
+  "name": "uiudiscordbot",
+  "version": "1.0.0",
+  "description": "This is Bot for UIU make by @monzim",
+  "main": "./prod/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node -r dotenv/config ./prod/index.js"
+  },
+  "author": "Azraf Al Monzim",
+  "license": "ISC",
+  "dependencies": {
+    "@azure/cosmos": "^3.17.3",
+    "@types/node": "^18.16.0",
+    "discord.js": "^14.9.0",
+    "dotenv": "^16.0.3",
+    "mongodb": "^5.3.0",
+    "typescript": "^5.0.4"
+  }
+}

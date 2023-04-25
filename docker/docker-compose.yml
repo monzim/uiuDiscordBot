@@ -1,0 +1,8 @@
+version: "3"
+services:
+  uiudiscordbot:
+    image: monzim/uiudiscordbot
+    container_name: uiudiscordbot
+    restart: always
+    environment:
+      - NODE_ENV=production

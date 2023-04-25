@@ -2,7 +2,7 @@ version: "3"
 
 services:
   uiudiscordbot:
-    image: monzim/uiudiscordbot:v1.0.1
+    image: monzim/uiudiscordbot:v1.0.2
     container_name: uiudiscordbot
     restart: always
     environment:

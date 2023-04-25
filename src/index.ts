@@ -95,17 +95,34 @@ const bot = new Client(botOptions);
 
     if (interaction.isChatInputCommand()) {
       if (commandName === "ping") {
-        await interaction.reply("Hey there! I'm alive! :D");
+        await interaction.reply("Hey there! I'm alive! :D").catch((err) => {
+          console.log("🚀 ~ file: index.ts:99 ~ bot.on ~ err:", err);
+          interaction.followUp("Unknown command").catch((err) => {
+            console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+          });
+        });
       } else if (commandName === "uiu") {
-        await interaction.reply(
-          "**UIU** Discord Bot created by  <@669529872644833290>\nThe bot is still in development. Please report any bugs to the developer. [Contact](https://monzim.com/monzim)\nThanks for using the bot!"
-        );
+        await interaction
+          .reply(
+            "**UIU** Discord Bot created by  <@669529872644833290>\nThe bot is still in development. Please report any bugs to the developer. [Contact](https://monzim.com/monzim)\nThanks for using the bot!"
+          )
+          .catch((err) => {
+            console.log("🚀 ~ file: index.ts:105 ~ bot.on ~ err:", err);
+            interaction.followUp("Unknown command").catch((err) => {
+              console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+            });
+          });
       } else if (commandName === "exam_time") {
         const courseCode: string =
           interaction.options.getString("course") ?? "";
         const section: string = interaction.options.getString("section") ?? "";
 
-        await interaction.deferReply();
+        await interaction.deferReply().catch((err) => {
+          console.log("🚀 ~ file: index.ts:109 ~ bot.on ~ err:", err);
+          interaction.followUp("Unknown command").catch((err) => {
+            console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+          });
+        });
 
         const courses = await findCoursesByCodeAndSection(
           courseCode.toUpperCase(),
@@ -114,9 +131,16 @@ const bot = new Client(botOptions);
 
         if (courses.length === 0) {
           console.log("No courses found");
-          await interaction.followUp({
-            content: `${interaction.user}  No courses found for ${courseCode} ${section}`,
-          });
+          await interaction
+            .followUp({
+              content: `${interaction.user}  No courses found for ${courseCode} ${section}`,
+            })
+            .catch((err) => {
+              console.log("🚀 ~ file: index.ts:124 ~ bot.on ~ err:", err);
+              interaction.followUp("Unknown command").catch((err) => {
+                console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+              });
+            });
           return;
         }
 
@@ -134,15 +158,33 @@ const bot = new Client(botOptions);
               )
           );
         }),
-          await interaction.followUp({
-            content: `${interaction.user} **${courses[0].CourseTitle}**\n ${title}`,
-            embeds: listEm,
-          });
+          await interaction
+            .followUp({
+              content: `${interaction.user} **${courses[0].CourseTitle}**\n ${title}`,
+              embeds: listEm,
+            })
+            .catch((err) => {
+              console.log("🚀 ~ file: index.ts:154 ~ bot.on ~ err:", err);
+              interaction.followUp("Unknown command").catch((err) => {
+                console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+              });
+            });
       } else {
-        await interaction.followUp("Unknown command");
+        await interaction.followUp("Unknown command").catch((err) => {
+          console.log("🚀 ~ file: index.ts:160 ~ bot.on ~ err:", err);
+          interaction.followUp("Unknown command").catch((err) => {
+            console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+          });
+        });
       }
     } else {
-      await interaction.reply("Unknown command LOL");
+      await interaction.reply("Unknown command LOL").catch((err) => {
+        console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+
+        interaction.followUp("Unknown command").catch((err) => {
+          console.log("🚀 ~ file: index.ts:165 ~ bot.on ~ err:", err);
+        });
+      });
     }
   });
 })();

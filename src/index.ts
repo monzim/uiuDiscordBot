@@ -8,7 +8,7 @@ import {
 } from "discord.js";
 
 import { findCoursesByCodeAndSection } from "./cosmos_search";
-import { discordToken, clientID } from "./config";
+import { discordToken } from "./config";
 import { initializeCommands } from "./commands";
 
 const botOptions: ClientOptions = {
@@ -35,7 +35,11 @@ const bot = new Client(botOptions);
 
   bot.on("messageCreate", async (message: Message) => {
     if (message.author.bot) return;
+
     console.log("Message received" + message);
+
+    // log author and message
+    console.log("Author: " + message.author.id);
 
     if (!message.content.startsWith(prefix)) {
       console.log("Message does not start with prefix");
@@ -91,15 +95,15 @@ const bot = new Client(botOptions);
 
     if (interaction.isChatInputCommand()) {
       if (commandName === "ping") {
-        await interaction.reply("Pong!");
-      } else if (commandName === "exam") {
+        await interaction.reply("Hey there! I'm alive! :D");
+      } else if (commandName === "uiu") {
+        await interaction.reply(
+          "**UIU** Discord Bot created by  <@669529872644833290>\nThe bot is still in development. Please report any bugs to the developer. [Contact](https://monzim.com/monzim)\nThanks for using the bot!"
+        );
+      } else if (commandName === "exam_time") {
         const courseCode: string =
           interaction.options.getString("course") ?? "";
         const section: string = interaction.options.getString("section") ?? "";
-        console.log("Course code: " + courseCode);
-        console.log("Section: " + section);
-
-        // await interaction.reply("Ole Ole " + courseCode + " " + section);
 
         await interaction.deferReply();
 
@@ -107,9 +111,9 @@ const bot = new Client(botOptions);
           courseCode.toUpperCase(),
           section.toUpperCase()
         );
-        console.log("🚀 ~ file: index.ts:153 ~ bot.on ~ courses:", courses);
 
         if (courses.length === 0) {
+          console.log("No courses found");
           await interaction.followUp({
             content: `${interaction.user}  No courses found for ${courseCode} ${section}`,
           });
@@ -124,17 +128,16 @@ const bot = new Client(botOptions);
           listEm.push(
             new EmbedBuilder()
               .setTitle(course.CourseCode)
-              .setColor("Random") // Set the color of the embed
+              .setColor("Random")
               .setDescription(
                 `Section: ${course.Section}     Faculty: ${course.Teacher}\n**${course.ExamDate} at ${course.ExamTime}**\n${course.Room}\n`
               )
           );
         }),
           await interaction.followUp({
-            content: `${interaction.user} **${courses[0].CourseTitle}\n ${title}`,
+            content: `${interaction.user} **${courses[0].CourseTitle}**\n ${title}`,
             embeds: listEm,
           });
-        // await interaction.editReply("Pong!");
       } else {
         await interaction.followUp("Unknown command");
       }
@@ -143,58 +146,3 @@ const bot = new Client(botOptions);
     }
   });
 })();
-
-// const replayWithCourse = async (
-//   message: string,
-//   interaction: ChatInputCommandInteraction<CacheType>
-// ) => {
-//   try {
-//     await interaction.deferReply();
-//     await interaction.followUp(message);
-//   } catch (error) {
-//     console.error("Failed to acknowledge interaction", error);
-//     try {
-//       await interaction.followUp("Failed to acknowledge interaction");
-//     } catch (error) {
-//       console.error("Failed to send message for interaction", error);
-//     }
-//   }
-// };
-
-// bot.on("interactionCreate", async (interaction: Interaction<CacheType>) => {
-//   if (!interaction.isCommand()) return;
-//   const { commandName } = interaction;
-
-//   if (interaction.isChatInputCommand()) {
-//     if (commandName === "ping") {
-//       await interaction.reply("Pong!");
-//     } else if (commandName === "exam") {
-//       // const courseCode = interaction.options.getString("course");
-//       // const section = interaction.options.getString("section");
-//       // await interaction.reply("Exam command " + courseCode + " " + section);
-//     } else {
-//       await interaction.reply("Unknown command");
-//     }
-//   } else if (interaction.isAutocomplete()) {
-//     const autoCompleteInt = interaction as AutocompleteInteraction;
-//     const focusedOption = autoCompleteInt.options.getFocused(true);
-//     let choices: string[] = [
-//       "Popular Topics: Threads",
-//       "Sharding: Getting started",
-//       "Library: Voice Connections",
-//       "Interactions: Replying to slash commands",
-//       "Popular Topics: Embed preview",
-//     ];
-
-//     // if (focusedOption.name === "version") {
-//     //   choices = ["v9", "v11", "v12", "v13", "v14"];
-//     // }
-//     const filtered = choices.filter((choice) =>
-//       choice.startsWith(focusedOption.value)
-//     );
-
-//     await autoCompleteInt.respond(
-//       filtered.map((choice) => ({ name: choice, value: choice }))
-//     );
-//   }
-// });

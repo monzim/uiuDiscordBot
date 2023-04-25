@@ -2,7 +2,6 @@ import { CosmosClient } from "@azure/cosmos";
 import * as config from "./config.json"; // Import the config file
 import Course from "./models/course";
 
-// Read the Cosmos DB account settings from the config file
 const { endpoint, key, databaseId, containerId } = config;
 
 // Connect to Cosmos DB account
@@ -27,8 +26,6 @@ export const findCoursesByCodeAndSection = async (
       .query(query)
       .fetchAll();
 
-    // return courses;
-
     // Map the query result to Course objects
     const mappedCourses: Course[] = courses.map((course: any) => {
       return {
@@ -48,28 +45,14 @@ export const findCoursesByCodeAndSection = async (
         _ts: course._ts,
       };
     });
-
-    console.log("Courses found:", mappedCourses);
+    console.log(
+      "🚀 ~ file: cosmos_search.ts:51 ~ constmappedCourses:Course[]=courses.map ~ mappedCourses:",
+      mappedCourses.length
+    );
 
     return mappedCourses;
   } catch (error) {
-    console.error("Error finding courses by roll:", error);
-    throw error;
+    console.log("🚀 ~ file: cosmos_search.ts:58 ~ error:", error);
+    return [];
   }
 };
-
-// export const findCoursesByRollAsync = async () => {
-//   const rl = readline.createInterface({
-//     input: process.stdin,
-//     output: process.stdout,
-//   });
-
-//   // Prompt the user for course code and section
-//   rl.question("Enter course code: ", async (code) => {
-//     rl.question("Enter section: ", async (section) => {
-//       const courses = await findCoursesByCodeAndSection(code, section);
-//       console.log("Courses found:", courses);
-//       rl.close();
-//     });
-//   });
-// };

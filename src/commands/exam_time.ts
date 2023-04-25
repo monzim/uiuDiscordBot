@@ -2,8 +2,8 @@ import { SlashCommandBuilder, Interaction } from "discord.js";
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("exam")
-    .setDescription("Replies with Pong!")
+    .setName("exam_time")
+    .setDescription("Get course exam info like date, time, room, etc.")
     .addStringOption((option) =>
       option
         .setName("course")

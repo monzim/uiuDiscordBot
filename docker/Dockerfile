@@ -5,7 +5,7 @@ FROM node:19.5.0
 LABEL maintainer="Azraf Al Moznim dev@monzim.com"
 
 # Set the image name and version label
-LABEL name="uiudiscordbot" version="1.0.0"
+LABEL name="uiudiscordbot" version="1.0.3"
 
 # Set other labels for description, author, and license
 LABEL description="This is Bot for UIU made by @monzim"

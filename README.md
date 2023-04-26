@@ -2,9 +2,9 @@
 
 # **UIU Bot**
 
-### version: 1.0.2
+### version: 1.0.3
 
-### docker-build: monzim/uiudiscordbot:1.0.2
+### docker-build: monzim/uiudiscordbot:1.0.3
 
 UIU Bot is a Discord bot designed to help students of United International University (UIU) easily access exam information and stay updated on exam schedules and notifications. The bot is currently under development with plans for adding more features in the future.
 

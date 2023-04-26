@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 import { REST, Routes } from "discord.js";
 import { clientID, discordToken } from "./config";
+import { sendWebhookErrorMessage } from "./webhook/send_message";
 
 const initializeCommands = async () => {
   let commands = [];
@@ -22,9 +23,10 @@ const initializeCommands = async () => {
       body: commands,
     })
     .then(() => console.log("Successfully registered application commands."))
-    .catch((e) =>
-      console.error(`Failed to register application commands: ${e}`)
-    );
+    .catch((err) => {
+      console.log("🚀 ~ file: commands.ts:26 ~ initializeCommands ~ err:", err);
+      sendWebhookErrorMessage("initializeCommands", err);
+    });
 };
 
 export { initializeCommands };

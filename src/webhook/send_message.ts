@@ -80,3 +80,28 @@ export const sendWebhookErrorMessage = async (func: string, err: any) => {
       console.error("Failed to send error message:", error);
     });
 };
+
+export const sendWebhookStatusMessage = async (
+  status: string,
+  message: string
+) => {
+  let statusMessage = message.toString();
+
+  if (statusMessage.length > 1990) {
+    console.warn(
+      "Status message length exceeds Discord's message length limit of 2000 characters. Truncating..."
+    );
+    statusMessage = statusMessage.slice(0, 1997) + "...";
+  }
+
+  webhookClient
+    .send({
+      content: `Status: ${status}`,
+      embeds: [
+        new EmbedBuilder().setColor("Green").setDescription(statusMessage),
+      ],
+    })
+    .catch((error) => {
+      console.error("Failed to send status message:", error);
+    });
+};

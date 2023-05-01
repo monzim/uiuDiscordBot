@@ -55,7 +55,7 @@ jobs:
           # platforms: linux/amd64,linux/arm64
           push: true
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:dev
             ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:dev
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:1.0.4

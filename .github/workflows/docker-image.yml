@@ -8,6 +8,9 @@ on:
     types: [closed]
     branches: ["live"]
 
+env:
+  SHORT_SHA: ${{ GITHUB_SHA::8 }}
+
 jobs:
   build-and-push:
     name: 🛠️ Build and Push
@@ -53,8 +56,10 @@ jobs:
           context: .
           file: ./docker/Dockerfile
           # platforms: linux/amd64,linux/arm64
-          push: true
-          tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:dev
+          push:
+            true
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:1.0.4
+          tags: |
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:dev
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.SHORT_SHA }}

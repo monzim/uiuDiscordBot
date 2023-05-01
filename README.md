@@ -12,6 +12,8 @@ UIU Bot is a Discord bot designed to help students of United International Unive
 
 - Exam Information: Get instant access to exam schedules, including date, time, and venue details, to help you plan and prepare for your exams effectively.
 
+-
+
 ## **How to Use**
 
 To use UIU Bot, simply add it to your Discord server and grant the necessary permissions. You can then interact with the bot by sending commands to it. The bot will respond with exam-related information, notifications, and other features as they are added during the development process.

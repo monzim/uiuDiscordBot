@@ -8,19 +8,20 @@ on:
     types: [closed]
     branches: ["live"]
 
-env:
-  DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-  CLIENT_ID: ${{ secrets.CLIENT_ID }}
-  WEBHOOK_ID: ${{ secrets.WEBHOOK_ID }}
-  WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
-  COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
-  COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-  COSMOS_DATABASE_ID: ${{ secrets.COSMOS_DATABASE_ID }}
-  COSMOS_CONTAINER_ID: ${{ secrets.COSMOS_CONTAINER_ID }}
-
 jobs:
-  build:
+  build-and-push:
+    name: 🛠️ Build and Push
     runs-on: ubuntu-latest
+    # env:
+    #   DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
+    #   CLIENT_ID: ${{ secrets.CLIENT_ID }}
+    #   WEBHOOK_ID: ${{ secrets.WEBHOOK_ID }}
+    #   WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
+    #   COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
+    #   COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
+    #   COSMOS_DATABASE_ID: ${{ secrets.COSMOS_DATABASE_ID }}
+    #   COSMOS_CONTAINER_ID: ${{ secrets.COSMOS_CONTAINER_ID }}
+
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
 
     steps:
@@ -38,18 +39,26 @@ jobs:
         with:
           node-version: "19.5.0"
 
+      - name: 📦 Set up QEMU
+        uses: docker/setup-qemu-action@v2
+
       - name: 🛠️ Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
-
-      # - name: 🏗️ Build and push
-      #   run: |
-      #     docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest -f docker/Dockerfile . --push
 
       - name: 🏗️ Build and push
         uses: docker/build-push-action@v4
         with:
           context: .
           file: ./docker/Dockerfile
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
-      #     platforms: linux/amd64,linux/arm64
+          env: |
+            DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}
+            CLIENT_ID=${{ secrets.CLIENT_ID }}
+            COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}
+            COSMOS_KEY=${{ secrets.COSMOS_KEY }}
+            COSMOS_DATABASE_ID=${{ secrets.COSMOS_DATABASE_ID }}
+            COSMOS_CONTAINER_ID=${{ secrets.COSMOS_CONTAINER_ID }}
+            WEBHOOK_ID=${{ secrets.WEBHOOK_ID }}
+            WEBHOOK_TOKEN=${{ secrets.WEBHOOK_TOKEN }}

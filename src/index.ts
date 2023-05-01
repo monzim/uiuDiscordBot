@@ -24,6 +24,7 @@ import { installmentHandlr } from "./command_handlr/installment";
 import { holidayHandlr } from "./command_handlr/holidayhandlr";
 import { makeupHandlr } from "./command_handlr/makeuphandlr";
 import { examHandlr } from "./command_handlr/examhandlr";
+import { helpHandlr } from "./command_handlr/helphandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -170,7 +171,9 @@ const bot = new Client(botOptions);
     const { commandName } = interaction;
 
     if (interaction.isChatInputCommand()) {
-      if (commandName === "ping") {
+      if (commandName === "help") {
+        await helpHandlr(interaction);
+      } else if (commandName === "ping") {
         await interaction.reply("Hey there! I'm alive! :D").catch((err) => {
           console.log("🚀 ~ file: index.ts:167 ~ bot.on ~ err:", err);
           sendWebhookErrorMessage("index.ts:167", err);

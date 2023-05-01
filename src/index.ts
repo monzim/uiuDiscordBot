@@ -11,7 +11,7 @@ import {
   findCoursesByCodeAndSection,
   findCoursesByDepartmentCourseCodeAndSection,
 } from "./cosmos/cosmos_search";
-import { discordToken } from "./config";
+import { DISCORD_TOKEN } from "./config";
 import { initializeCommands } from "./commands";
 import { generateMarkdownMessageWithCourse } from "./models/course";
 import {
@@ -34,7 +34,7 @@ const bot = new Client(botOptions);
 
 (async () => {
   await initializeCommands();
-  bot.login(discordToken);
+  bot.login(DISCORD_TOKEN);
 
   const prefix = "!";
 

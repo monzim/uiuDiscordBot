@@ -9,7 +9,7 @@ on:
     branches: ["live"]
 env:
   IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || 'dev' }}
-  SHORT_SHA: ${{ github.sha | slice(0, 7) }}
+  SHORT_SHA: ${GITHUB_SHA::8}
 
 jobs:
   build-and-push:

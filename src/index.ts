@@ -20,6 +20,7 @@ import {
   sendWebhookMessage,
   sendWebhookStatusMessage,
 } from "./webhook/send_message";
+import { installmentHandlr } from "./command_handlr/installment";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -271,6 +272,8 @@ const bot = new Client(botOptions);
               sendWebhookErrorMessage("index.ts:267", err);
             });
           });
+      } else if (commandName === "installment") {
+        await installmentHandlr(interaction);
       } else {
         await interaction.followUp("Unknown command").catch((err) => {
           console.log("🚀 ~ file: index.ts:274 ~ bot.on ~ err:", err);

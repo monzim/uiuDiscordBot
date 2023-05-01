@@ -9,6 +9,7 @@ on:
     branches: ["live"]
 env:
   IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || 'dev' }}
+  SHORT_SHA: ${{ github.sha | slice(0, 7) }}
 
 jobs:
   build-and-push:
@@ -71,4 +72,4 @@ jobs:
           push: true
           tags: |
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.IMAGE_TAG }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha.slice(0, 7) }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.SHORT_SHA }}

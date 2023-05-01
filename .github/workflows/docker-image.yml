@@ -64,3 +64,4 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.IMAGE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.SHORT_SHA }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:1.0.4

@@ -27,23 +27,26 @@ jobs:
       - name: 📥 Checkout Repo
         uses: actions/checkout@v3
 
-      - name: 🔑 Login to Docker Hub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 🐳 Print Environment Variables
+        run: env
 
-      - name: 📦 Setup Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: "19.5.0"
+      # - name: 🔑 Login to Docker Hub
+      #   uses: docker/login-action@v2
+      #   with:
+      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
+      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: 🛠️ Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+      # - name: 📦 Setup Node.js
+      #   uses: actions/setup-node@v2
+      #   with:
+      #     node-version: "19.5.0"
 
-      - name: 🏗️ Build and push
-        run: |
-          docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest -f docker/Dockerfile . --push
+      # - name: 🛠️ Set up Docker Buildx
+      #   uses: docker/setup-buildx-action@v2
+
+      # - name: 🏗️ Build and push
+      #   run: |
+      #     docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest -f docker/Dockerfile . --push
 
       # - name: 🏗️ Build and push
       #   uses: docker/build-push-action@v4

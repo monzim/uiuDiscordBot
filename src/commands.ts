@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { REST, Routes } from "discord.js";
-import { clientID, discordToken } from "./config";
+import { CLIENT_ID, DISCORD_TOKEN } from "./config";
 import { sendWebhookErrorMessage } from "./webhook/send_message";
 
 const initializeCommands = async () => {
@@ -16,10 +16,10 @@ const initializeCommands = async () => {
     commands.push(command.data.toJSON());
   }
 
-  const rest = new REST({ version: "9" }).setToken(discordToken as string);
+  const rest = new REST({ version: "9" }).setToken(DISCORD_TOKEN as string);
 
   await rest
-    .put(Routes.applicationCommands(clientID as string), {
+    .put(Routes.applicationCommands(CLIENT_ID as string), {
       body: commands,
     })
     .then(() => console.log("Successfully registered application commands."))

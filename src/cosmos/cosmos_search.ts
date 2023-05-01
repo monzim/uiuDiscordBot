@@ -1,12 +1,17 @@
 import { CosmosClient } from "@azure/cosmos";
-import * as config from "./../config.json"; // Import the config file
 import Course from "./../models/course";
 import { sendWebhookErrorMessage } from "../webhook/send_message";
+import {
+  COSMOS_CONTAINER_ID,
+  COSMOS_DATABASE_ID,
+  COSMOS_KEY,
+  COSMOS_ENDPOINT,
+} from "../config";
 
-const { endpoint, key, databaseId, containerId } = config;
-
-// Connect to Cosmos DB account
-const cosmosClient = new CosmosClient({ endpoint, key });
+const cosmosClient = new CosmosClient({
+  endpoint: COSMOS_ENDPOINT as string,
+  key: COSMOS_KEY as string,
+});
 
 export const findCoursesByCodeAndSection = async (
   courseCode: string,
@@ -14,10 +19,10 @@ export const findCoursesByCodeAndSection = async (
 ): Promise<Course[]> => {
   try {
     const { database } = await cosmosClient.databases.createIfNotExists({
-      id: databaseId,
+      id: COSMOS_DATABASE_ID as string,
     });
     const { container } = await database.containers.createIfNotExists({
-      id: containerId,
+      id: COSMOS_CONTAINER_ID as string,
     });
 
     // Query the container for courses with matching roll
@@ -66,10 +71,10 @@ export const findCoursesByDepartmentCourseCodeAndSection = async (
 ): Promise<Course[]> => {
   try {
     const { database } = await cosmosClient.databases.createIfNotExists({
-      id: databaseId,
+      id: COSMOS_DATABASE_ID as string,
     });
     const { container } = await database.containers.createIfNotExists({
-      id: containerId,
+      id: COSMOS_CONTAINER_ID as string,
     });
 
     // Query the container for courses with matching roll

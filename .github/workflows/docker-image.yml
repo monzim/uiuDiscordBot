@@ -46,7 +46,7 @@ jobs:
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> .env
           echo "WEBHOOK_ID=${{ secrets.WEBHOOK_ID }}" >> .env
           echo "WEBHOOK_TOKEN=${{ secrets.WEBHOOK_TOKEN }}" >> .env
-          echo "CHANNEL_ID"=${{ secrets.CHANNEL_ID }}" >> .env
+          echo "CHANNEL_ID=${{ secrets.CHANNEL_ID }}" >> .env
           echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> .env
           echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> .env
           echo "COSMOS_DATABASE_ID=${{ secrets.COSMOS_DATABASE_ID }}" >> .env

@@ -22,6 +22,7 @@ import {
 } from "./webhook/send_message";
 import { installmentHandlr } from "./command_handlr/installment";
 import { holidayHandlr } from "./command_handlr/holidayhandlr";
+import { makeupHandlr } from "./command_handlr/makeuphandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -277,6 +278,8 @@ const bot = new Client(botOptions);
         await installmentHandlr(interaction);
       } else if (commandName === "holiday") {
         await holidayHandlr(interaction);
+      } else if (commandName === "makeup") {
+        await makeupHandlr(interaction);
       } else {
         await interaction.followUp("Unknown command").catch((err) => {
           console.log("🚀 ~ file: index.ts:274 ~ bot.on ~ err:", err);

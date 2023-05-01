@@ -9,7 +9,7 @@ on:
     branches: ["live"]
 
 env:
-  SHORT_SHA: ${{ GITHUB_SHA::8 }}
+  SHORT_SHA: ${{ GITHUB_SHA }}
 
 jobs:
   build-and-push:

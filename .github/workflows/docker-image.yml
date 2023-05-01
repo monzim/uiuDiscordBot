@@ -15,6 +15,8 @@ jobs:
     # if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live' && (${{ github.event.inputs.latest }} == 'true' || ${{ github.event.inputs.latest }} == ''))
 
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
+    env:
+      IMAGE_TAG: ${{ if contains(steps.fetch_commit_message.outputs.message, 'latest:true') }}latest${{ else }}${{ github.sha }}${{ endif }}
 
     steps:
       - name: 📥 Checkout Repo
@@ -72,4 +74,4 @@ jobs:
           tags: |
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }}
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ if contains(steps.fetch_commit_message.outputs.message, 'latest:true') }}latest${{ else }}${{ github.sha }}${{ endif }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }},${{ env.IMAGE_TAG }}

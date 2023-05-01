@@ -72,6 +72,6 @@ jobs:
           push: true
           # tags: ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
           tags: |
-            # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }}
-            # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:test

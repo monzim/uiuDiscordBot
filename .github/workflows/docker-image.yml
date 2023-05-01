@@ -10,6 +10,7 @@ on:
 
 env:
   SHORT_SHA: ${{ github.sha }}
+  IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || 'dev' }}
 
 jobs:
   build-and-push:
@@ -61,5 +62,5 @@ jobs:
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:1.0.4
           tags: |
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:dev
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.IMAGE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.SHORT_SHA }}

@@ -27,32 +27,29 @@ jobs:
       - name: 📥 Checkout Repo
         uses: actions/checkout@v3
 
-      - name: 🐳 Print Environment Variables
-        run: echo DISCORD_TOKEN=$DISCORD_TOKEN CLIENT_ID=$CLIENT_ID WEBHOOK_ID=$WEBHOOK_ID WEBHOOK_TOKEN=$WEBHOOK_TOKEN COSMOS_ENDPOINT=$COSMOS_ENDPOINT COSMOS_KEY=$COSMOS_KEY COSMOS_DATABASE_ID=$COSMOS_DATABASE_ID COSMOS_CONTAINER_ID=$COSMOS_CONTAINER_ID
+      - name: 🔑 Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      # - name: 🔑 Login to Docker Hub
-      #   uses: docker/login-action@v2
-      #   with:
-      #     username: ${{ secrets.DOCKERHUB_USERNAME }}
-      #     password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: 📦 Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: "19.5.0"
 
-      # - name: 📦 Setup Node.js
-      #   uses: actions/setup-node@v2
-      #   with:
-      #     node-version: "19.5.0"
-
-      # - name: 🛠️ Set up Docker Buildx
-      #   uses: docker/setup-buildx-action@v2
+      - name: 🛠️ Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
 
       # - name: 🏗️ Build and push
       #   run: |
       #     docker buildx build --platform linux/amd64,linux/arm64 -t ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest -f docker/Dockerfile . --push
 
-      # - name: 🏗️ Build and push
-      #   uses: docker/build-push-action@v4
-      #   with:
-      #     context: .
-      #     file: ./docker/Dockerfile
-      #     push: true
-      #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
+      - name: 🏗️ Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          file: ./docker/Dockerfile
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
       #     platforms: linux/amd64,linux/arm64

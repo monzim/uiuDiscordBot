@@ -12,15 +12,6 @@ jobs:
   build-and-push:
     name: 🛠️ Build and Push
     runs-on: ubuntu-latest
-    # env:
-    #   DISCORD_TOKEN: ${{ secrets.DISCORD_TOKEN }}
-    #   CLIENT_ID: ${{ secrets.CLIENT_ID }}
-    #   WEBHOOK_ID: ${{ secrets.WEBHOOK_ID }}
-    #   WEBHOOK_TOKEN: ${{ secrets.WEBHOOK_TOKEN }}
-    #   COSMOS_ENDPOINT: ${{ secrets.COSMOS_ENDPOINT }}
-    #   COSMOS_KEY: ${{ secrets.COSMOS_KEY }}
-    #   COSMOS_DATABASE_ID: ${{ secrets.COSMOS_DATABASE_ID }}
-    #   COSMOS_CONTAINER_ID: ${{ secrets.COSMOS_CONTAINER_ID }}
 
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
 
@@ -55,6 +46,7 @@ jobs:
           echo "DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}" > .env
           echo "CLIENT_ID=${{ secrets.CLIENT_ID }}" >> .env
           echo "WEBHOOK_ID=${{ secrets.WEBHOOK_ID }}" >> .env
+          echo "WEBHOOK_TOKEN=${{ secrets.WEBHOOK_TOKEN }}" >> .env
           echo "COSMOS_ENDPOINT=${{ secrets.COSMOS_ENDPOINT }}" >> .env
           echo "COSMOS_KEY=${{ secrets.COSMOS_KEY }}" >> .env
           echo "COSMOS_DATABASE_ID=${{ secrets.COSMOS_DATABASE_ID }}" >> .env

@@ -21,6 +21,7 @@ import {
   sendWebhookStatusMessage,
 } from "./webhook/send_message";
 import { installmentHandlr } from "./command_handlr/installment";
+import { holidayHandlr } from "./command_handlr/holidayhandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -274,6 +275,8 @@ const bot = new Client(botOptions);
           });
       } else if (commandName === "installment") {
         await installmentHandlr(interaction);
+      } else if (commandName === "holiday") {
+        await holidayHandlr(interaction);
       } else {
         await interaction.followUp("Unknown command").catch((err) => {
           console.log("🚀 ~ file: index.ts:274 ~ bot.on ~ err:", err);

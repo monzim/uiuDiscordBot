@@ -16,7 +16,7 @@ jobs:
 
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
     env:
-      IMAGE_TAG: ${{ if contains(steps.fetch_commit_message.outputs.message, 'latest:true') }}latest${{ else }}${{ github.sha }}${{ endif }}
+      IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || $GITHUB_SHA }}
 
     steps:
       - name: 📥 Checkout Repo

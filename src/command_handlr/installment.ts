@@ -22,7 +22,7 @@ export const installmentHandlr = async (
       color: "DarkBlue",
       date: new Date("Jun 18, 2023"),
       message:
-        "1st installment: A fine of Tk. 1,000/- will be imposed if 40% of Tuition Fee and Trimester Fee is not paid within this date",
+        "1st installment: A fine of Tk. 1,000/- will be imposed if 40% of Tuition Fee and Trimester Fee is not paid within this date.\nTransportation fee, if applicable, must be paid in full (no installment)",
     },
     {
       index: 2,

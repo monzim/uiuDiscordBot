@@ -74,4 +74,4 @@ jobs:
           tags: |
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }}
             # ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:latest
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ github.sha }},${{ env.IMAGE_TAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.IMAGE_TAG }}

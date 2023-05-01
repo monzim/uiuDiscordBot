@@ -4,6 +4,7 @@ dotenv.config();
 
 const DISCORD_TOKEN = process.env.DISCORD_TOKEN;
 const CLIENT_ID = process.env.CLIENT_ID;
+const CHANNEL_ID = process.env.CHANNEL_ID;
 const WEBHOOK_TOKEN = process.env.WEBHOOK_TOKEN;
 const WEBHOOK_ID = process.env.WEBHOOK_ID;
 
@@ -16,6 +17,7 @@ export {
   DISCORD_TOKEN,
   CLIENT_ID,
   WEBHOOK_TOKEN,
+  CHANNEL_ID,
   WEBHOOK_ID,
   COSMOS_ENDPOINT,
   COSMOS_KEY,

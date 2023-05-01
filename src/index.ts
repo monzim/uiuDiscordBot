@@ -11,7 +11,7 @@ import {
   findCoursesByCodeAndSection,
   findCoursesByDepartmentCourseCodeAndSection,
 } from "./cosmos/cosmos_search";
-import { DISCORD_TOKEN } from "./config";
+import { CHANNEL_ID, DISCORD_TOKEN } from "./config";
 import { initializeCommands } from "./commands";
 import { generateMarkdownMessageWithCourse } from "./models/course";
 import {
@@ -51,6 +51,37 @@ const bot = new Client(botOptions);
       "Online",
       `Bot is online!. Logged in as ${bot.user}`
     );
+    Client;
+
+    // send a message to from bot to the channel
+    const channel = CHANNEL_ID as string;
+    bot.channels
+      .fetch(channel)
+      .then((channel) => {
+        if (channel != null && channel.isTextBased()) {
+          channel
+            .send({
+              embeds: [
+                new EmbedBuilder()
+                  .setColor("Green")
+                  .setTitle("Wassup. After a new update, I am back online!"),
+              ],
+            })
+            .catch((err) => {
+              console.log(
+                "🚀 ~ file: index.ts:69 ~ bot.channels.fetch ~ err:",
+                err
+              );
+
+              sendWebhookErrorMessage("index.ts:69", err);
+            });
+        }
+      })
+      .catch((err) => {
+        console.log("🚀 ~ file: index.ts:81 ~ bot.on ~ err:", err);
+
+        sendWebhookErrorMessage("index.ts:81", err);
+      });
   });
 
   bot.on("messageCreate", async (message: Message) => {

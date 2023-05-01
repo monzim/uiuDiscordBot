@@ -12,7 +12,7 @@ jobs:
   build-and-push:
     name: 🛠️ Build and Push
     runs-on: ubuntu-latest
-    # if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live' && (${{ github.event.inputs.latest }} == 'true' || ${{ github.event.inputs.latest }} == ''))
+    # if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live' && (${{ github.event.inputs.latest }} == 'true' || ${{ github.event.inputs.latest }} == '')) test
 
     if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
     env:

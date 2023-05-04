@@ -17,7 +17,9 @@ jobs:
     name: 🛠️ Build and Push
     runs-on: ubuntu-latest
 
-    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
+    if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live' && !contains(github.event.head_commit.message, '#stop'))
+
+    # if: github.event_name == 'pull_request' || (github.event_name == 'push' && github.ref == 'refs/heads/live')
 
     steps:
       - name: 📥 Checkout Repo

@@ -1,30 +1,44 @@
-# README
+# 🤖 UIU Discord Bot 🎓
 
-# **UIU Bot**
+Welcome to the UIU Discord Bot, Your Exam Companion! Get instant access to United International University's exam information with ease. Stay updated on exam schedules, notifications, and more. Under continuous development for added features!
 
-### version: 1.0.3
+## 🚀 Getting Started
 
-### docker-build: monzim/uiudiscordbot:1.0.3
+To get started with the UIU Discord Bot, follow these steps:
 
-UIU Bot is a Discord bot designed to help students of United International University (UIU) easily access exam information and stay updated on exam schedules and notifications. The bot is currently under development with plans for adding more features in the future.
+1.  Invite the bot to your Discord server using the following link: [Invite link](https://discord.com/invite/ywwUXsfj9f)
+2.  Type `/help` to get a list of all the available commands.
 
-## **Features**
+## 💻 Available Commands
 
-- Exam Information: Get instant access to exam schedules, including date, time, and venue details, to help you plan and prepare for your exams effectively.
+The following commands are currently available:
 
--
+- `/ping` - Replies with Pong!
+- `/exam` - Replies with information about the upcoming exams.
+- `/exam_time` - Get course exam info like date, time, room, etc.
+- `/makeup` - Get details about the upcoming makeup classes.
+- `/installment` - Get information about the upcoming installment.
+- `/holiday` - Replies with information about the upcoming holidays.
+- `/uiu` - About the UIU Discord Bot.
+- `/help` - Get a list of all the available commands.
 
-## **How to Use**
+## 🆕 Latest Update
 
-To use UIU Bot, simply add it to your Discord server and grant the necessary permissions. You can then interact with the bot by sending commands to it. The bot will respond with exam-related information, notifications, and other features as they are added during the development process.
+I am excited to announce that our UIU Discord bot has been updated with some new features! We have added several new commands that will enhance your experience on our server. You can now use the `/exam`, `/makeup`, `/installment`, and `/holiday` commands to get all the relevant information you need.
 
-## **Future Updates**
+## 📦 Current Version Information [1.0.4]
 
-UIU Bot is constantly being developed to improve and expand its features. Planned future updates include:
+- Host: Azure VM
+- Docker Image: **monzim/uiudiscordbot:1.0.4**
+- Docker Image Version: **1.0.4**
+- Node Version: **19.5.0**
 
-- Personalized Reminders: Set up personalized exam reminders to help you stay organized and on top of your exam schedule.
-- Feedback and Suggestions: UIU Bot welcomes feedback and suggestions from users to continually enhance its functionalities and cater to the needs of UIU students better.
+## 🤝 Contributing
 
-## **Conclusion**
+If you want to contribute to the development of the UIU Discord Bot, please fork the repository and create a pull request. We welcome all contributions, big or small!
 
-UIU Bot aims to be a valuable tool for UIU students, providing them with easy access to exam information and updates. With its user-friendly interface, tech-driven approach, and planned future updates, UIU Bot strives to be a reliable and efficient exam companion for the UIU community.
+## ❓ Need Help?
+
+If you have any questions or feedback, please feel free to reach out to me. You can also create an issue in the repository if you encounter any bugs or problems.
+
+Thank you for being a part of our community!

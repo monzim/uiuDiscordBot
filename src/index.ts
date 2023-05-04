@@ -25,6 +25,7 @@ import { holidayHandlr } from "./command_handlr/holidayhandlr";
 import { makeupHandlr } from "./command_handlr/makeuphandlr";
 import { examHandlr } from "./command_handlr/examhandlr";
 import { helpHandlr } from "./command_handlr/helphandlr";
+import { versionHandlr } from "./command_handlr/versionhandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -317,6 +318,9 @@ const bot = new Client(botOptions);
         await makeupHandlr(interaction);
       } else if (commandName === "exam") {
         await examHandlr(interaction);
+      } else if (commandName === "version") {
+        await versionHandlr(interaction);
+        // TODO: Add version command
       } else {
         await interaction.followUp("Unknown command").catch((err) => {
           console.log("🚀 ~ file: index.ts:274 ~ bot.on ~ err:", err);

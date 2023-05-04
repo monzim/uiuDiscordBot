@@ -1,13 +1,21 @@
 import { CosmosClient } from "@azure/cosmos";
 import * as fs from "fs";
-import * as config from "../src/config.json";
+
+import {
+  COSMOS_CONTAINER_ID,
+  COSMOS_DATABASE_ID,
+  COSMOS_KEY,
+  COSMOS_ENDPOINT,
+} from "../src/config";
 
 const filesPath: string[] = [
   "data/spring_23_final/bscse_bseee.json",
   "data/spring_23_final/bba.json",
 ];
-const { endpoint, key, databaseId, containerId } = config;
-const client = new CosmosClient({ endpoint, key });
+const client = new CosmosClient({
+  endpoint: COSMOS_ENDPOINT as string,
+  key: COSMOS_KEY as string,
+});
 
 const insertFileData = async (filePath: string) => {
   // Read the JSON data from file
@@ -17,10 +25,10 @@ const insertFileData = async (filePath: string) => {
 
   try {
     const { database } = await client.databases.createIfNotExists({
-      id: databaseId,
+      id: COSMOS_DATABASE_ID,
     });
     const { container } = await database.containers.createIfNotExists({
-      id: containerId,
+      id: COSMOS_CONTAINER_ID,
     });
 
     for (const data of jsonData) {

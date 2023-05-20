@@ -26,11 +26,11 @@ The following commands are currently available:
 
 I am excited to announce that our UIU Discord bot has been updated with some new features! We have added several new commands that will enhance your experience on our server. You can now use the `/exam`, `/makeup`, `/installment`, and `/holiday` commands to get all the relevant information you need.
 
-## 📦 Current Version Information [1.0.5]
+## 📦 Current Version Information [1.0.6]
 
 - Host: Azure VM
-- Docker Image: **monzim/uiudiscordbot:1.0.5**
-- Docker Image Version: **1.0.5**
+- Docker Image: **monzim/uiudiscordbot:1.0.6**
+- Docker Image Version: **1.0.6**
 - Node Version: **19.5.0**
 
 ## 🤝 Contributing

@@ -26,6 +26,9 @@ import { makeupHandlr } from "./command_handlr/makeuphandlr";
 import { examHandlr } from "./command_handlr/examhandlr";
 import { helpHandlr } from "./command_handlr/helphandlr";
 import { versionHandlr } from "./command_handlr/versionhandlr";
+import { unizimHandlr } from "./command_handlr/unizimhandlr";
+import { applinkHandlr } from "./command_handlr/applinkhandlr";
+import { examTimeHandlr } from "./command_handlr/examtimehandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -230,86 +233,7 @@ const bot = new Client(botOptions);
             });
           });
       } else if (commandName === "exam_time") {
-        const department: string =
-          interaction.options.getString("department") ?? "";
-
-        const courseCode: string =
-          interaction.options.getString("course") ?? "";
-
-        const section: string = interaction.options.getString("section") ?? "";
-
-        await interaction.deferReply().catch((err) => {
-          console.log("🚀 ~ file: index.ts:199 ~ bot.on ~ err:", err);
-          sendWebhookErrorMessage("index.ts:199", err);
-
-          interaction.followUp("Unknown command").catch((err) => {
-            console.log("🚀 ~ file: index.ts:204 ~ bot.on ~ err:", err);
-            sendWebhookErrorMessage("index.ts:204", err);
-          });
-        });
-
-        const courses = await findCoursesByDepartmentCourseCodeAndSection(
-          department.toUpperCase(),
-          courseCode.toUpperCase(),
-          section.toUpperCase()
-        );
-
-        if (courses.length === 0) {
-          console.log("No courses found");
-          await interaction
-            .followUp({
-              content: `${interaction.user}  No courses found for ${courseCode} ${section}`,
-            })
-            .catch((err) => {
-              console.log("🚀 ~ file: index.ts:223 ~ bot.on ~ err:", err);
-              sendWebhookErrorMessage("index.ts:223", err);
-
-              interaction.followUp("Unknown command").catch((err) => {
-                console.log("🚀 ~ file: index.ts:228 ~ bot.on ~ err:", err);
-                sendWebhookErrorMessage("index.ts:228", err);
-              });
-            });
-          return;
-        }
-
-        let listEm: any = [];
-
-        courses.map((course) => {
-          let _selectedSection = course.Section.toLowerCase();
-          _selectedSection = _selectedSection.replace(/\s/g, "");
-
-          if (_selectedSection === section.toLowerCase()) {
-            listEm.push(
-              new EmbedBuilder()
-                .setTitle(course.CourseCode)
-                .setColor("Random")
-                .setDescription(
-                  `Section: ${course.Section}     Faculty: ${course.Teacher}\n**${course.ExamDate} at ${course.ExamTime}**\n${course.Room}\n`
-                )
-            );
-          }
-        });
-
-        let title = `In total, the query has **${courses.length}** ${
-          courses.length > 1 ? "courses" : "course"
-        }. The following **${listEm.length}** ${
-          listEm.length > 1 ? "courses" : "course"
-        } match. :)`;
-
-        await interaction
-          .followUp({
-            content: `${interaction.user} **${courses[0].CourseTitle}**\n ${title}`,
-            embeds: listEm,
-          })
-          .catch((err) => {
-            console.log("🚀 ~ file: index.ts:261 ~ bot.on ~ err:", err);
-            sendWebhookErrorMessage("index.ts:261", err);
-
-            interaction.followUp("Unknown command").catch((err) => {
-              console.log("🚀 ~ file: index.ts:267 ~ bot.on ~ err:", err);
-              sendWebhookErrorMessage("index.ts:267", err);
-            });
-          });
+        await examTimeHandlr(interaction);
       } else if (commandName === "installment") {
         await installmentHandlr(interaction);
       } else if (commandName === "holiday") {
@@ -320,7 +244,10 @@ const bot = new Client(botOptions);
         await examHandlr(interaction);
       } else if (commandName === "version") {
         await versionHandlr(interaction);
-        // TODO: Add version command
+      } else if (commandName === "unizim") {
+        await unizimHandlr(interaction);
+      } else if (commandName === "applink") {
+        await applinkHandlr(interaction);
       } else {
         await interaction.followUp("Unknown command").catch((err) => {
           console.log("🚀 ~ file: index.ts:274 ~ bot.on ~ err:", err);

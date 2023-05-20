@@ -30,6 +30,15 @@ export const helpHandlr = async (
       description: "Replies with Pong!",
     },
     {
+      command: "/unizim",
+      description: "Unizim App Public Beta Testing.",
+    },
+    {
+      command: "/applink",
+      description: "Get the Unizim App Public Beta Testing Link!",
+    },
+
+    {
       command: "/exam",
       description: "Replies with upcoming exam!",
     },
@@ -52,6 +61,10 @@ export const helpHandlr = async (
     {
       command: "/uiu",
       description: "About the UIU Discord Bot",
+    },
+    {
+      command: "/version",
+      description: "Get the current version of the bot!",
     },
     {
       command: "/help",

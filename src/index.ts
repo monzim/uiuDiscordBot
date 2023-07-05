@@ -7,10 +7,7 @@ import {
   Interaction,
 } from "discord.js";
 
-import {
-  findCoursesByCodeAndSection,
-  findCoursesByDepartmentCourseCodeAndSection,
-} from "./cosmos/cosmos_search";
+import { findCoursesByCodeAndSection } from "./cosmos/cosmos_search";
 import { CHANNEL_ID, DISCORD_TOKEN } from "./config";
 import { initializeCommands } from "./commands";
 import { generateMarkdownMessageWithCourse } from "./models/course";
@@ -28,7 +25,7 @@ import { helpHandlr } from "./command_handlr/helphandlr";
 import { versionHandlr } from "./command_handlr/versionhandlr";
 import { unizimHandlr } from "./command_handlr/unizimhandlr";
 import { applinkHandlr } from "./command_handlr/applinkhandlr";
-import { examTimeHandlr } from "./command_handlr/examtimehandlr";
+import { examTimeHandlrProd } from "./command_handlr/examtimehandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -210,11 +207,9 @@ const bot = new Client(botOptions);
         await helpHandlr(interaction);
       } else if (commandName === "ping") {
         await interaction.reply("Hey there! I'm alive! :D").catch((err) => {
-          console.log("🚀 ~ file: index.ts:167 ~ bot.on ~ err:", err);
           sendWebhookErrorMessage("index.ts:167", err);
 
           interaction.followUp("Unknown command").catch((err) => {
-            console.log("🚀 ~ file: index.ts:172 ~ bot.on ~ err:", err);
             sendWebhookErrorMessage("index.ts:172", err);
           });
         });
@@ -224,16 +219,14 @@ const bot = new Client(botOptions);
             "**UIU** Discord Bot created by  <@669529872644833290>\nThe bot is still in development. Please report any bugs to the developer. [Contact](https://monzim.com/monzim)\nThanks for using the bot!"
           )
           .catch((err) => {
-            console.log("🚀 ~ file: index.ts:180 ~ bot.on ~ err:", err);
             sendWebhookErrorMessage("index.ts:180", err);
 
             interaction.followUp("Unknown command").catch((err) => {
-              console.log("🚀 ~ file: index.ts:184 ~ bot.on ~ err:", err);
               sendWebhookErrorMessage("index.ts:184", err);
             });
           });
       } else if (commandName === "exam_time") {
-        await examTimeHandlr(interaction);
+        await examTimeHandlrProd(interaction);
       } else if (commandName === "installment") {
         await installmentHandlr(interaction);
       } else if (commandName === "holiday") {

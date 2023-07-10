@@ -1,6 +1,6 @@
 {
   "name": "uiudiscordbot",
-  "version": "1.0.0",
+  "version": "1.0.8",
   "description": "This is Bot for UIU make by @monzim",
   "main": "./prod/index.js",
   "scripts": {

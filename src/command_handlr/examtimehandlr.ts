@@ -43,7 +43,9 @@ export const examTimeHandlrProd = async (
     console.log("No courses found");
     await interaction
       .followUp({
-        content: `${interaction.user}  No courses found for ${courseCode} ${section}`,
+        content: `### ${
+          interaction.user
+        } **NO COURSE FOUND** for ${courseCode.toUpperCase()} ${section.toUpperCase()}\n### **Support the bot's longevity with a donation if you found it helpful. [Click here for 🎁 Donate](https://monzim.com/support). Thank you!**  `,
       })
       .catch((err) => {
         sendWebhookErrorMessage("index.ts:223", err);
@@ -55,7 +57,7 @@ export const examTimeHandlrProd = async (
     return;
   }
 
-  let listEm: any = [];
+  let listEm: EmbedBuilder[] = [];
 
   courses.map((course) => {
     let _selectedSection = course.Section.toLowerCase();
@@ -73,22 +75,85 @@ export const examTimeHandlrProd = async (
     }
   });
 
-  let title = `In total, the query has **${courses.length}** ${
-    courses.length > 1 ? "courses" : "course"
-  }. The following **${listEm.length}** ${
-    listEm.length > 1 ? "courses" : "course"
-  } match. :)`;
-
-  await interaction
-    .followUp({
-      content: `${interaction.user} **${courses[0].CourseTitle}**\n ${title}`,
-      embeds: listEm,
-    })
-    .catch((err) => {
-      sendWebhookErrorMessage("index.ts:261", err);
-
-      interaction.followUp("Unknown command").catch((err) => {
-        sendWebhookErrorMessage("index.ts:267", err);
-      });
+  // set last embed footer
+  listEm[listEm.length - 1]
+    // .setThumbnail("https://source.unsplash.com/user/c_v_r/300x00")
+    .setFooter({
+      text: "Help Us Make a Difference",
+      iconURL:
+        "https://res.cloudinary.com/monzim/image/upload/v1688984685/download_kh1syl.png",
     });
+
+  const courseCount = courses.length;
+  const matchCount = listEm.length;
+  const isMultipleCourses = courseCount > 1;
+  const isMultipleMatches = matchCount > 1;
+
+  const coursePlural = isMultipleCourses ? "courses" : "course";
+  const matchPlural = isMultipleMatches ? "courses" : "course";
+
+  const title = `In total, the query has **${courseCount}** ${coursePlural}. The following **${matchCount}** ${matchPlural} match. :)`;
+
+  try {
+    // await interaction.followUp({
+    //   content: `## ${interaction.user} **${courses[0].CourseTitle}**\n### **Support the bot's longevity with a donation if you found it helpful. [Click here for 🎁 Donate](https://monzim.com/support). Thank you!** `,
+    //   embeds: listEm,
+    // });
+
+    await interaction.followUp({
+      content: `### ${interaction.user} **Support the bot's longevity with a donation if you found it helpful. [Click here for 🎁 Donate](https://monzim.com/support). Thank you!** `,
+      embeds: listEm,
+    });
+  } catch (err) {
+    sendWebhookErrorMessage("index.ts:261", err);
+
+    try {
+      await interaction.followUp("Unknown command");
+    } catch (err) {
+      sendWebhookErrorMessage("index.ts:267", err);
+    }
+  }
+
+  // // send a message for donation link
+  // await interaction.user
+  //   .send({
+  //     content: `Support the bot's longevity with a donation if you found it helpful. Thank you!`,
+  //     embeds: [
+  //       new EmbedBuilder()
+  //         .setTitle("Donate")
+  //         .setColor("Random")
+  //         .setDescription(
+  //           `Support the bot's longevity with a donation if you found it helpful. Thank you!`
+  //         )
+  //         .addFields({
+  //           name: "PayPal",
+  //           value: `[Donate](https://www.paypal.com/donate?hosted_button_id=ZQZQZQZQZQZQZ)`,
+  //         }),
+  //     ],
+  //   })
+  //   .catch((err) => {
+  //     console.log("🚀 ~ file: examtimehandlr.ts:111 ~ err:", err);
+  //   });
+  // .followUp({
+  //   content: `Support the bot's longevity with a donation if you found it helpful. Thank you!`,
+  //   embeds: [
+  //     new EmbedBuilder()
+  //       .setTitle("Donate")
+  //       .setColor("Random")
+  //       .setDescription(
+  //         `Support the bot's longevity with a donation if you found it helpful. Thank you!`
+  //       )
+  //       .addFields({
+  //         name: "PayPal",
+  //         value: `[Donate](https://www.paypal.com/donate?hosted_button_id=ZQZQZQZQZQZQZ)`,
+  //       }),
+  //   ],
+  // })
+  // .catch((err) => {
+  //   sendWebhookErrorMessage("index.ts:297", err);
+
+  //   interaction.followUp("Unknown command").catch((err) => {
+  //     sendWebhookErrorMessage("index.ts:302", err);
+  //   });
+  // });
 };

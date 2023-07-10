@@ -26,6 +26,7 @@ import { versionHandlr } from "./command_handlr/versionhandlr";
 import { unizimHandlr } from "./command_handlr/unizimhandlr";
 import { applinkHandlr } from "./command_handlr/applinkhandlr";
 import { examTimeHandlrProd } from "./command_handlr/examtimehandlr";
+import { donationHandlr } from "./command_handlr/donationhandlr";
 
 const botOptions: ClientOptions = {
   intents: [
@@ -239,6 +240,8 @@ const bot = new Client(botOptions);
         await versionHandlr(interaction);
       } else if (commandName === "unizim") {
         await unizimHandlr(interaction);
+      } else if (commandName === "donation") {
+        await donationHandlr(interaction);
       } else if (commandName === "applink") {
         await applinkHandlr(interaction);
       } else {

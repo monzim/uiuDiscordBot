@@ -1,7 +1,6 @@
 import {
   CacheType,
   ChatInputCommandInteraction,
-  ColorResolvable,
   EmbedBuilder,
 } from "discord.js";
 import { sendWebhookErrorMessage } from "../webhook/send_message";
@@ -36,6 +35,10 @@ export const helpHandlr = async (
     {
       command: "/applink",
       description: "Get the Unizim App Public Beta Testing Link!",
+    },
+    {
+      command: "/donate",
+      description: "Support the bot's longevity with a donation!",
     },
 
     {
@@ -72,13 +75,24 @@ export const helpHandlr = async (
     },
   ];
 
+  // sort the command list by command name alphabetically
+  commandList.sort((a, b) => {
+    if (a.command < b.command) {
+      return -1;
+    }
+    if (a.command > b.command) {
+      return 1;
+    }
+    return 0;
+  });
+
   await interaction
     .reply({
       content: "Here is the list of commands:",
       embeds: [
         new EmbedBuilder()
           .setColor("NotQuiteBlack")
-          .setTitle("UIU Discord Bot Commands")
+          .setTitle("Available Commands")
           .setDescription(
             commandList
               .map((cmd) => {

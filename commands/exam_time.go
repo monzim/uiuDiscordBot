@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/monzim/uiuBot/models"
@@ -61,6 +62,8 @@ var examTime = Commnad{
 	},
 
 	Handler: func(op *options) {
+		startTime := time.Now()
+
 		input := op.in.ApplicationCommandData().Options
 
 		optionMap := make(map[string]*discordgo.ApplicationCommandInteractionDataOption, len(input))
@@ -132,6 +135,21 @@ var examTime = Commnad{
 			})
 		}
 
+		go func() {
+			elapsed := time.Since(startTime)
+
+			res := op.logDB.Create(&models.ExamTimeLog{
+				UserID:       op.in.Member.User.ID,
+				Department:   department,
+				CourseCode:   courseCode,
+				Section:      section,
+				ResponseTime: elapsed.String(),
+			})
+
+			if res.Error != nil {
+				op.ses.ChannelMessageSend(op.in.ChannelID, "Error: "+res.Error.Error())
+			}
+		}()
 	},
 }
 

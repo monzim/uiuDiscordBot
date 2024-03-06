@@ -14,10 +14,11 @@ func Migrate(db *gorm.DB) error {
 		&models.Exam{},
 		&models.CommandLog{},
 		&models.UserActivity{},
-		&models.ErrorLog{},
 		&models.ServerStats{},
 		&models.EventLog{},
 		&models.UserDetails{},
+		&models.ExamTimeLog{},
+		&models.MessageLog{},
 	)
 
 	if err != nil {

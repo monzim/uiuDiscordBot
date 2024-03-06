@@ -2,16 +2,19 @@ package commands
 
 import (
 	"strings"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/monzim/uiuBot/models"
 	"github.com/rs/zerolog/log"
 	"gorm.io/gorm"
 )
 
 type options struct {
-	in  *discordgo.InteractionCreate
-	ses *discordgo.Session
-	db  *gorm.DB
+	in    *discordgo.InteractionCreate
+	ses   *discordgo.Session
+	db    *gorm.DB
+	logDB *gorm.DB
 }
 
 type Commnad struct {
@@ -104,12 +107,91 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 	}
 }
 
-func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gorm.DB) {
-	log.Info().Str("command", i.ApplicationCommandData().Name).Msg("Command received")
-	log.Info().Str("user", i.Member.User.ID).Msg("User")
-	log.Info().Str("user", i.Member.User.Username).Msg("User")
+func updateUserActivity(db *gorm.DB, userID string) {
+	var userActivity models.UserActivity
+	if err := db.FirstOrCreate(&userActivity, models.UserActivity{UserID: userID}).Error; err != nil {
+		return
+	}
+
+	db.Model(&userActivity).Updates(models.UserActivity{
+		CommandsExecuted: userActivity.CommandsExecuted + 1,
+		LastActivity:     time.Now().String(),
+	})
+}
+
+func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gorm.DB, logDb *gorm.DB) {
+
+	go func() {
+		updateUserActivity(logDb, i.Member.User.ID)
+	}()
+
+	go func() {
+		logDb.Create(&models.EventLog{
+			EventType:        "command executed",
+			EventDescription: i.ApplicationCommandData().Name,
+		})
+
+		// add or update user details
+		var user models.UserDetails
+		if err := logDb.FirstOrCreate(&user, models.UserDetails{UserID: i.Member.User.ID,
+			Username:      i.Member.User.Username,
+			AvatarURL:     i.Member.User.AvatarURL(""),
+			JoinedAt:      i.Member.JoinedAt,
+			Email:         i.Member.User.Email,
+			Avatar:        i.Member.User.Avatar,
+			Locale:        i.Member.User.Locale,
+			Discriminator: i.Member.User.Discriminator,
+			Token:         i.Member.User.Token,
+			Verified:      i.Member.User.Verified,
+			MFAEnabled:    i.Member.User.MFAEnabled,
+			Banner:        i.Member.User.Banner,
+			AccentColor:   i.Member.User.AccentColor,
+			Bot:           i.Member.User.Bot,
+			PremiumType:   i.Member.User.PremiumType,
+			System:        i.Member.User.System,
+			Flags:         i.Member.User.Flags,
+		}).Error; err != nil {
+			return
+		}
+
+		logDb.Model(&user).Updates(models.UserDetails{
+			Username:      i.Member.User.Username,
+			AvatarURL:     i.Member.User.AvatarURL(""),
+			JoinedAt:      i.Member.JoinedAt,
+			Email:         i.Member.User.Email,
+			Avatar:        i.Member.User.Avatar,
+			Locale:        i.Member.User.Locale,
+			Discriminator: i.Member.User.Discriminator,
+			Token:         i.Member.User.Token,
+			Verified:      i.Member.User.Verified,
+			MFAEnabled:    i.Member.User.MFAEnabled,
+			Banner:        i.Member.User.Banner,
+			AccentColor:   i.Member.User.AccentColor,
+			Bot:           i.Member.User.Bot,
+			PremiumType:   i.Member.User.PremiumType,
+			System:        i.Member.User.System,
+			Flags:         i.Member.User.Flags,
+		})
+
+	}()
 
 	if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
-		h(&options{in: i, ses: s, db: db})
+		startTime := time.Now()
+
+		go func() {
+			h(&options{in: i, ses: s, db: db, logDB: logDb})
+
+			params := ""
+			for _, v := range i.ApplicationCommandData().Options {
+				params += v.Name + ": " + v.Value.(string) + " "
+			}
+
+			logDb.Create(&models.CommandLog{
+				UserID:       i.Member.User.ID,
+				Command:      i.ApplicationCommandData().Name,
+				Parameters:   params,
+				ResponseTime: time.Since(startTime).String(),
+			})
+		}()
 	}
 }

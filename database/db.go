@@ -29,7 +29,7 @@ func NewDatabaseConnection(config *DatabaseConfig) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	zLog.Info().Msg("Database connection established")
+	zLog.Info().Msgf("%s database connection established", config.DBname)
 	return db, nil
 
 }

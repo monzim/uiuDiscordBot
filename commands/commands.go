@@ -105,6 +105,10 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 }
 
 func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gorm.DB) {
+	log.Info().Str("command", i.ApplicationCommandData().Name).Msg("Command received")
+	log.Info().Str("user", i.Member.User.ID).Msg("User")
+	log.Info().Str("user", i.Member.User.Username).Msg("User")
+
 	if h, ok := commandHandlers[i.ApplicationCommandData().Name]; ok {
 		h(&options{in: i, ses: s, db: db})
 	}

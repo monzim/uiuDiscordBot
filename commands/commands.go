@@ -25,6 +25,7 @@ var (
 		installmentHandler.Trigger: installmentHandler.Handler,
 		holidayHandler.Trigger:     holidayHandler.Handler,
 		handlerAuthor.Trigger:      handlerAuthor.Handler,
+		handlerVersion.Trigger:     handlerVersion.Handler,
 	}
 )
 
@@ -36,6 +37,7 @@ func GetCommands() []*discordgo.ApplicationCommand {
 		installmentHandler.Command,
 		holidayHandler.Command,
 		handlerAuthor.Command,
+		handlerVersion.Command,
 	}
 }
 

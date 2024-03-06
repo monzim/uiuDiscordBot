@@ -97,6 +97,11 @@ func main() {
 
 	}
 
+	err = postgres.AutoMigrate(&models.Exam{})
+	if err != nil {
+		log.Error().Err(err).Msg("Error migrating the database")
+	}
+
 	// get all the unique department names
 	var departments []string
 	postgres.Table("exams").Distinct("department").Pluck("department", &departments)

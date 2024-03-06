@@ -1,14 +1,17 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"os"
 	"os/signal"
 
+	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
 	"github.com/monzim/uiuBot/bot"
 	"github.com/monzim/uiuBot/commands"
 	db "github.com/monzim/uiuBot/database"
+	"github.com/monzim/uiuBot/models"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 )
@@ -48,33 +51,62 @@ func main() {
 
 	}
 
-	// pg2, err := db.NewDatabaseConnection(&db.DatabaseConfig{})
-	// if err != nil {
-	// 	log.Error().Err(err).Msg("Error initializing the database connection 2")
-	// }
+	logPg, err := db.NewDatabaseConnection(&db.DatabaseConfig{
+		Host:     os.Getenv("LOG_DB_HOST"),
+		Port:     os.Getenv("LOG_DB_PORT"),
+		DBname:   os.Getenv("LOG_DB_NAME"),
+		User:     os.Getenv("LOG_DB_USER"),
+		Password: os.Getenv("LOG_DB_PASSWORD"),
+		SSlMode:  os.Getenv("LOG_DB_SSL_MODE"),
+	})
+	if err != nil {
+		log.Error().Err(err).Msg("Error initializing the database connection 2")
+	}
 
 	err = db.Migrate(postgres)
 	if err != nil {
 		log.Error().Err(err).Msg("Error migrating the database")
 	}
 
-	// err = db.Migrate(pg2)
-	// if err != nil {
-	// 	log.Error().Err(err).Msg("Error migrating the database 2")
-	// }
+	err = db.Migrate(logPg)
+	if err != nil {
+		log.Error().Err(err).Msg("Error migrating the database 2")
+	}
 
-	myBot, err := bot.NewBot(*BotToken, *GuildID, *RemoveCommands, postgres)
+	myBot, err := bot.NewBot(*BotToken, *GuildID, *RemoveCommands, postgres, logPg)
 	if err != nil {
 		log.Error().Err(err).Msg("Invalid bot parameters")
 	}
 
 	defer myBot.Close()
 
-	// Open the bot session before registering commands
 	err = myBot.Open()
 	if err != nil {
 		log.Fatal().Err(err).Msg("Cannot open the session")
 	}
+
+	go myBot.LogServerStats()
+	go func() {
+		myBot.Session.AddHandler(func(s *discordgo.Session, m *discordgo.MessageCreate) {
+			if m.Author.ID == s.State.User.ID {
+				return
+			}
+
+			jn, err := json.Marshal(m)
+			if err != nil {
+				log.Error().Err(err).Msg("Error marshalling the message")
+				return
+			}
+
+			logPg.Create(models.MessageLog{
+				ID:        m.ID,
+				UserID:    m.Author.ID,
+				ChannelID: m.ChannelID,
+				Message:   m.Content,
+				Data:      jn,
+			})
+		})
+	}()
 
 	myBot.AddCommandHandlers()
 

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -18,9 +20,32 @@ type UserActivity struct {
 	LastActivity     string `json:"last_activity"`
 }
 
-type ErrorLog struct {
+type UserDetails struct {
+	UserID    string    `json:"user_id" gorm:"primaryKey"`
+	Username  string    `json:"username"`
+	AvatarURL string    `json:"avatar_url"`
+	JoinedAt  time.Time `json:"joined_at"`
+
+	Email         string `json:"email"`
+	Avatar        string `json:"avatar"`
+	Locale        string `json:"locale"`
+	Discriminator string `json:"discriminator"`
+	Token         string `json:"token"`
+	Verified      bool   `json:"verified"`
+	MFAEnabled    bool   `json:"mfa_enabled"`
+	Banner        string `json:"banner"`
+	AccentColor   int    `json:"accent_color"`
+	Bot           bool   `json:"bot"`
+	PublicFlags   int    `json:"public_flags"`
+	PremiumType   int    `json:"premium_type"`
+	System        bool   `json:"system"`
+	Flags         int    `json:"flags"`
+}
+
+type EventLog struct {
 	gorm.Model
-	ErrorMessage string `json:"error_message"`
+	EventType        string `json:"event_type"`
+	EventDescription string `json:"event_description"`
 }
 
 type ServerStats struct {
@@ -30,15 +55,11 @@ type ServerStats struct {
 	CreatedAt     string `json:"created_at"`
 }
 
-type EventLog struct {
+type ExamTimeLog struct {
 	gorm.Model
-	EventType        string `json:"event_type"`
-	EventDescription string `json:"event_description"`
-}
-
-type UserDetails struct {
-	UserID    string `json:"user_id" gorm:"primaryKey"`
-	Username  string `json:"username"`
-	AvatarURL string `json:"avatar_url"`
-	JoinedAt  string `json:"joined_at"`
+	UserID       string `json:"user_id"`
+	Department   string `json:"department"`
+	CourseCode   string `json:"course_code"`
+	Section      string `json:"section"`
+	ResponseTime string `json:"response_time"`
 }

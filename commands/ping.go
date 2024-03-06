@@ -12,6 +12,7 @@ var ping = Commnad{
 	},
 
 	Handler: func(op *options) {
+
 		op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{

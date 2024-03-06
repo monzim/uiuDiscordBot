@@ -79,12 +79,18 @@ func main() {
 	}
 
 	postgres, err := db.NewDatabaseConnection(&db.DatabaseConfig{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		DBname:   os.Getenv("DB_NAME"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		SSlMode:  os.Getenv("DB_SSL_MODE"),
+		// Host:     os.Getenv("DB_HOST"),
+		// Port:     os.Getenv("DB_PORT"),
+		// DBname:   os.Getenv("DB_NAME"),
+		// User:     os.Getenv("DB_USER"),
+		// Password: os.Getenv("DB_PASSWORD"),
+		// SSlMode:  os.Getenv("DB_SSL_MODE"),
+		Host:     os.Getenv("LOG_DB_HOST"),
+		Port:     os.Getenv("LOG_DB_PORT"),
+		DBname:   os.Getenv("LOG_DB_NAME"),
+		User:     os.Getenv("LOG_DB_USER"),
+		Password: os.Getenv("LOG_DB_PASSWORD"),
+		SSlMode:  os.Getenv("LOG_DB_SSL_MODE"),
 	})
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the database connection")

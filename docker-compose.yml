@@ -1,0 +1,24 @@
+version: "3.9"
+
+services:
+  postgres:
+    image: postgres:latest
+    container_name: discord-postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - discord_postgres_data:/var/lib/postgresql/data
+    networks:
+      - gateway
+
+    environment:
+      POSTGRES_DB: discord
+      POSTGRES_USER: monzim
+      POSTGRES_PASSWORD: 123456789
+
+networks:
+  gateway:
+    external: true
+
+volumes:
+  discord_postgres_data:

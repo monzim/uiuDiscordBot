@@ -111,7 +111,7 @@ var examTime = Commnad{
 				exam.Section = strings.ToUpper(exam.Section)
 
 				embeds = append(embeds, &discordgo.MessageEmbed{
-					Title: exam.CourseTitle,
+					Title: exam.CourseTitle + " (" + strings.ToUpper(exam.Department) + ")",
 					Color: getColorCode(exam.CourseCode),
 					Description: "**" + exam.CourseCode + "**\n" +
 						"Section **" + exam.Section + "**" + "     Faculty **" + exam.Teacher + "\n**\n**" + exam.ExamDate + " at " + exam.ExamTime + "**\n" + "Room " + exam.Room + "\n",

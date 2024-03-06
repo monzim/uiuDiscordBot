@@ -91,7 +91,13 @@ func main() {
 
 	}
 
-	// get all the unique course codes from database
+	// get all the unique department names
+	var departments []string
+	postgres.Table("exams").Distinct("department").Pluck("department", &departments)
+
+	log.Info().Msgf("Unique departments: %v", departments)
+	log.Info().Msgf("Total departments: %v", len(departments))
+
 	// var courses []string
 	// postgres.Table("exams").Distinct("course_code").Pluck("course_code", &courses)
 
@@ -123,8 +129,7 @@ func main() {
 	// return
 
 	csvFils := []string{
-		"data/Spring24-BBA-BBA-in-AIS-BSECO.csv",
-		"data/Spring24-BSCSE-BSDS-BSEEE.csv",
+		"data/BSCSE-BSDS-BSEEE-BBA-BBA_in_AIS-&-BSECO-BSCE-BSSEDS-MSCSE-BA-in-English-MBA:EMBA.csv",
 	}
 
 	for _, csvFile := range csvFils {
@@ -137,16 +142,16 @@ func main() {
 
 		log.Info().Msgf("Data from %s converted to %s", csvFile, jsonFilePath)
 
-		for _, exam := range json {
+		for i, exam := range json {
 			var e models.Exam
 			result := postgres.Where("id = ?", exam.ID).First(&e)
-			if result.RowsAffected > 0 {
-				log.Info().Msgf("Exam already exists: %s", exam.ID)
+			if result.Error == nil {
+				log.Info().Msgf("%d. Exam already exists", i+1)
 				continue
 			}
 
 			postgres.Create(&exam)
-			log.Info().Msgf("Inserted exam: %s", exam.ID)
+			log.Info().Msgf("%d. Data inserted", i+1)
 		}
 	}
 

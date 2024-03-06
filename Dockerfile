@@ -1,17 +1,17 @@
 FROM golang:1.22.0-alpine3.18
 
 LABEL maintainer="Azraf Al Monzim"
-LABEL name="test" version="1.0.0"
+LABEL name="Test" version="1.0.0"
 LABEL author="Azraf Al Monzim"
 
-WORKDIR /app
+WORKDIR /go/src/app
 
-RUN touch .env
-
-COPY . /app
+COPY . .
 
 RUN go get -d -v
 
-RUN go build -o test
+RUN go build -o main .
 
-CMD ["./test"]
+EXPOSE 8080
+
+CMD ["./main"]

@@ -1,0 +1,14 @@
+version: "3.9"
+
+services:
+  test-server:
+    image: CONTAINER_ID
+
+    environment:
+      TOKEN:
+      DB_HOST:
+      DB_PORT:
+      DB_NAME:
+      DB_USER:
+      DB_PASSWORD:
+      DB_SSL_MODE:

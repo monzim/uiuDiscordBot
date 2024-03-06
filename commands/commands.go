@@ -19,13 +19,14 @@ type Commnad struct {
 
 var (
 	commandHandlers = map[string]func(op *options){
-		ping.Trigger:               ping.Handler,
-		examTime.Trigger:           examTime.Handler,
-		upcomingExam.Trigger:       upcomingExam.Handler,
-		installmentHandler.Trigger: installmentHandler.Handler,
-		holidayHandler.Trigger:     holidayHandler.Handler,
-		handlerAuthor.Trigger:      handlerAuthor.Handler,
-		handlerVersion.Trigger:     handlerVersion.Handler,
+		ping.Trigger:                   ping.Handler,
+		examTime.Trigger:               examTime.Handler,
+		upcomingExam.Trigger:           upcomingExam.Handler,
+		installmentHandler.Trigger:     installmentHandler.Handler,
+		holidayHandler.Trigger:         holidayHandler.Handler,
+		handlerAuthor.Trigger:          handlerAuthor.Handler,
+		handlerVersion.Trigger:         handlerVersion.Handler,
+		academyCalenderHandler.Trigger: academyCalenderHandler.Handler,
 	}
 )
 
@@ -38,6 +39,7 @@ func GetCommands() []*discordgo.ApplicationCommand {
 		holidayHandler.Command,
 		handlerAuthor.Command,
 		handlerVersion.Command,
+		academyCalenderHandler.Command,
 	}
 }
 

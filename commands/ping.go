@@ -15,7 +15,7 @@ var ping = Commnad{
 		op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: "Pong! " + op.in.Member.User.Mention() + " Latency: " + op.ses.HeartbeatLatency().String(),
+				Content: "Pong! " + op.in.Member.User.Mention() + " Latency: " + op.ses.HeartbeatLatency().String() + "\n" + SUPPORT_STRING,
 			},
 		})
 	},

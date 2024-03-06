@@ -67,7 +67,7 @@ func main() {
 	myBot.AddCommandHandlers()
 
 	log.Info().Msg("Adding commands...")
-	registeredCommands := myBot.RegisterCommands(commands.GetCommands(), *GuildID)
+	registeredCommands := myBot.RegisterCommands(commands.GetCommands(myBot.DB), *GuildID)
 
 	stop := make(chan os.Signal, 1)
 	signal.Notify(stop, os.Interrupt)

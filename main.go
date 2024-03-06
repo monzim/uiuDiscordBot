@@ -22,6 +22,7 @@ var (
 func init() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 
+	log.Info().Msg("Initializing the bot...")
 	err := godotenv.Load()
 	if err != nil {
 		log.Error().Err(err).Msg("Error loading .env file")
@@ -31,6 +32,7 @@ func init() {
 }
 
 func main() {
+	log.Info().Msg("Starting the bot...")
 	flag.Parse()
 
 	postgres, err := db.NewDatabaseConnection(&db.DatabaseConfig{
@@ -46,10 +48,20 @@ func main() {
 
 	}
 
+	// pg2, err := db.NewDatabaseConnection(&db.DatabaseConfig{})
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Error initializing the database connection 2")
+	// }
+
 	err = db.Migrate(postgres)
 	if err != nil {
 		log.Error().Err(err).Msg("Error migrating the database")
 	}
+
+	// err = db.Migrate(pg2)
+	// if err != nil {
+	// 	log.Error().Err(err).Msg("Error migrating the database 2")
+	// }
 
 	myBot, err := bot.NewBot(*BotToken, *GuildID, *RemoveCommands, postgres)
 	if err != nil {

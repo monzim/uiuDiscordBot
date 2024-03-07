@@ -3,7 +3,7 @@ name: Docker Build and Push to Amazon ECR
 on:
   push:
     branches:
-      - go
+      - live
 env:
   SHORT_SHA: ${{ github.sha }}
   IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || 'dev' }}
@@ -73,4 +73,4 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.IMAGE_TAG }}
             ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:${{ env.SHORT_SHA }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:2.0.0-${{ env.SHORT_SHA }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/uiudiscordbot:2.0.0

@@ -12,15 +12,18 @@ type CommandLog struct {
 	Command      string `json:"command"`
 	Parameters   string `json:"parameters"`
 	ResponseTime string `json:"response_time"`
+	ServerID     string `json:"server_id"`
 }
 
 type UserActivity struct {
 	UserID           string `json:"user_id" gorm:"primaryKey"`
 	CommandsExecuted int    `json:"commands_executed"`
 	LastActivity     string `json:"last_activity"`
+	ServerID         string `json:"server_id"`
 }
 
 type UserDetails struct {
+	ServerID  string    `json:"server_id" gorm:"primaryKey"`
 	UserID    string    `json:"user_id" gorm:"primaryKey"`
 	Username  string    `json:"username"`
 	AvatarURL string    `json:"avatar_url"`
@@ -46,6 +49,7 @@ type EventLog struct {
 	gorm.Model
 	EventType        string `json:"event_type"`
 	EventDescription string `json:"event_description"`
+	ServerID         string `json:"server_id"`
 }
 
 type ServerStats struct {
@@ -62,4 +66,5 @@ type ExamTimeLog struct {
 	CourseCode   string `json:"course_code"`
 	Section      string `json:"section"`
 	ResponseTime string `json:"response_time"`
+	ServerID     string `json:"server_id"`
 }

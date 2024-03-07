@@ -100,6 +100,7 @@ func main() {
 
 			logPg.Create(models.MessageLog{
 				ID:        m.ID,
+				ServerID:  m.GuildID,
 				UserID:    m.Author.ID,
 				ChannelID: m.ChannelID,
 				Message:   m.Content,

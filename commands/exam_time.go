@@ -139,6 +139,7 @@ var examTime = Commnad{
 			elapsed := time.Since(startTime)
 
 			res := op.logDB.Create(&models.ExamTimeLog{
+				ServerID:     op.in.GuildID,
 				UserID:       op.in.Member.User.ID,
 				Department:   department,
 				CourseCode:   courseCode,

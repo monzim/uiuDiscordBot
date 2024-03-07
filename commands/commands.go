@@ -109,11 +109,15 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 
 func updateUserActivity(db *gorm.DB, userID string) {
 	var userActivity models.UserActivity
-	if err := db.FirstOrCreate(&userActivity, models.UserActivity{UserID: userID}).Error; err != nil {
+	if err := db.FirstOrCreate(&userActivity, models.UserActivity{UserID: userID,
+		ServerID: userID,
+	}).Error; err != nil {
 		return
 	}
 
 	db.Model(&userActivity).Updates(models.UserActivity{
+		UserID:           userID,
+		ServerID:         userID,
 		CommandsExecuted: userActivity.CommandsExecuted + 1,
 		LastActivity:     time.Now().String(),
 	})
@@ -127,13 +131,18 @@ func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gor
 
 	go func() {
 		logDb.Create(&models.EventLog{
+			ServerID:         i.GuildID,
 			EventType:        "command executed",
 			EventDescription: i.ApplicationCommandData().Name,
 		})
 
 		// add or update user details
 		var user models.UserDetails
-		if err := logDb.FirstOrCreate(&user, models.UserDetails{UserID: i.Member.User.ID,
+		serverId := i.GuildID
+
+		if err := logDb.FirstOrCreate(&user, models.UserDetails{
+			ServerID:      serverId,
+			UserID:        i.Member.User.ID,
 			Username:      i.Member.User.Username,
 			AvatarURL:     i.Member.User.AvatarURL(""),
 			JoinedAt:      i.Member.JoinedAt,
@@ -155,6 +164,8 @@ func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gor
 		}
 
 		logDb.Model(&user).Updates(models.UserDetails{
+			ServerID:      serverId,
+			UserID:        i.Member.User.ID,
 			Username:      i.Member.User.Username,
 			AvatarURL:     i.Member.User.AvatarURL(""),
 			JoinedAt:      i.Member.JoinedAt,
@@ -187,6 +198,7 @@ func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gor
 			}
 
 			logDb.Create(&models.CommandLog{
+				ServerID:     i.GuildID,
 				UserID:       i.Member.User.ID,
 				Command:      i.ApplicationCommandData().Name,
 				Parameters:   params,

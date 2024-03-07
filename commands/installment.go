@@ -70,7 +70,7 @@ var installmentHandler = Commnad{
 			Data: &discordgo.InteractionResponseData{
 				Content: "Please note the following payment due dates and payment requirements. " +
 					"Next Payment: **" + nextPayment.Date.Format("02 Jan 2006") +
-					" time left " + formatDuration(nextPayment.Date) +
+					" time left " + formatDuration(nextPayment.Date) + " " +
 					SUPPORT_STRING,
 				Embeds: embeds,
 			},

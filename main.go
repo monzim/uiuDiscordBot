@@ -3,8 +3,10 @@ package main
 import (
 	"encoding/json"
 	"flag"
+	"fmt"
 	"os"
 	"os/signal"
+	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -35,6 +37,8 @@ func init() {
 }
 
 func main() {
+	defer handleUnexpectedPanics()
+
 	log.Info().Msg("Starting the bot...")
 	flag.Parse()
 
@@ -59,6 +63,7 @@ func main() {
 		Password: os.Getenv("LOG_DB_PASSWORD"),
 		SSlMode:  os.Getenv("LOG_DB_SSL_MODE"),
 	})
+
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the database connection 2")
 	}
@@ -109,6 +114,12 @@ func main() {
 		})
 	}()
 
+	go pingServerStatus(myBot)
+	go statsPing(myBot)
+
+	// list all commands
+	myBot.ListCommands(*GuildID)
+
 	myBot.AddCommandHandlers()
 
 	log.Info().Msg("Adding commands...")
@@ -126,4 +137,66 @@ func main() {
 
 	log.Info().Msg("Gracefully shutting down.")
 
+}
+
+func pingServerStatus(myBot *bot.Bot) {
+	interval, err := time.ParseDuration(os.Getenv("STATUS_PING_INTERVAL_DURATION"))
+	if err != nil {
+		log.Error().Err(err).Msg("Error parsing the interval")
+		interval = time.Minute * 60
+	}
+
+	ticker := time.NewTicker(interval)
+	defer ticker.Stop()
+
+	startTime := time.Now()
+
+	uptime := func() time.Duration {
+		return time.Since(startTime).Round(time.Second)
+	}
+
+	for range ticker.C {
+		myBot.Session.ChannelMessageSend(os.Getenv("STATUS_CHANNEL"), fmt.Sprintf("Hello, I'm still alive! Uptime: %v", uptime()))
+	}
+}
+
+func statsPing(myBot *bot.Bot) {
+	for {
+		interval, err := time.ParseDuration(os.Getenv("USED_STATS_PING_INTERVAL_DURATION"))
+		if err != nil {
+			log.Error().Err(err).Msg("Error parsing the interval")
+			interval = time.Minute * 140
+		}
+
+		startTime := time.Now().Add(-interval)
+		myBot.LogServerStats()
+
+		var userActivity models.UserActivity
+		myBot.DB.Model(&models.UserActivity{}).Where("time_stamps > ?", startTime).Find(&userActivity)
+
+		var message string
+
+		if userActivity.CommandsExecuted > 0 {
+			if userActivity.CommandsExecuted == 1 {
+				message = fmt.Sprintf("### In the last %s, 1 command was executed", interval.String())
+			} else if userActivity.CommandsExecuted > 10 {
+				message = fmt.Sprintf("### Wow! In the last %s, %d commands were executed", interval.String(), userActivity.CommandsExecuted)
+			} else {
+				message = fmt.Sprintf("### In the last %s, %d commands were executed", interval.String(), userActivity.CommandsExecuted)
+			}
+		} else {
+			message = fmt.Sprintf("### In the last %s, no commands were executed :(", interval.String())
+		}
+
+		myBot.Session.ChannelMessageSend(os.Getenv("STATUS_CHANNEL"), message)
+
+		time.Sleep(interval)
+	}
+}
+
+func handleUnexpectedPanics() {
+	if r := recover(); r != nil {
+		log.Error().Interface("panic", r).Msg("Unexpected panic")
+		os.Exit(1)
+	}
 }

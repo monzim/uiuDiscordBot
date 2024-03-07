@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/joho/godotenv"
 	db "github.com/monzim/uiuBot/database"
@@ -153,6 +154,7 @@ func main() {
 
 		log.Info().Msgf("Data from %s converted to %s", csvFile, jsonFilePath)
 
+		startTime := time.Now()
 		for i, exam := range json {
 			var e models.Exam
 			result := postgres.Where("id = ?", exam.ID).First(&e)
@@ -164,6 +166,8 @@ func main() {
 			postgres.Create(&exam)
 			log.Info().Msgf("%d. Data inserted", i+1)
 		}
+
+		log.Info().Msgf("Data inserted successfully! Time taken: %v", time.Since(startTime))
 	}
 
 	log.Info().Msg("Data inserted successfully!")

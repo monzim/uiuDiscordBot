@@ -16,10 +16,11 @@ type CommandLog struct {
 }
 
 type UserActivity struct {
-	UserID           string `json:"user_id" gorm:"primaryKey"`
-	CommandsExecuted int    `json:"commands_executed"`
-	LastActivity     string `json:"last_activity"`
-	ServerID         string `json:"server_id"`
+	UserID           string    `json:"user_id" gorm:"primaryKey"`
+	CommandsExecuted int       `json:"commands_executed"`
+	LastActivity     string    `json:"last_activity"`
+	TimeStamps       time.Time `json:"time_stamps"`
+	ServerID         string    `json:"server_id"`
 }
 
 type UserDetails struct {
@@ -49,7 +50,16 @@ type EventLog struct {
 	gorm.Model
 	EventType        string `json:"event_type"`
 	EventDescription string `json:"event_description"`
+	DM               bool   `json:"dm"`
 	ServerID         string `json:"server_id"`
+}
+
+type DMLog struct {
+	gorm.Model
+	UserID   string `json:"user_id"`
+	Name     string `json:"name"`
+	UserData []byte `gorm:"type:jsonb" json:"user_data"`
+	Data     []byte `gorm:"type:jsonb" json:"data"`
 }
 
 type ServerStats struct {

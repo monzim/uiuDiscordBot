@@ -120,6 +120,7 @@ func updateUserActivity(db *gorm.DB, userID string) {
 		ServerID:         userID,
 		CommandsExecuted: userActivity.CommandsExecuted + 1,
 		LastActivity:     time.Now().String(),
+		TimeStamps:       time.Now(),
 	})
 }
 

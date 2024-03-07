@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"encoding/json"
+
 	"github.com/bwmarrin/discordgo"
 	"github.com/monzim/uiuBot/commands"
 	"github.com/monzim/uiuBot/models"
@@ -44,8 +46,60 @@ func (b *Bot) Close() {
 
 func (b *Bot) AddCommandHandlers() {
 	b.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
+
+		if i.GuildID == "" {
+			log.Info().Msg("Ignoring DM interaction")
+
+			s.InteractionRespond(i.Interaction, &discordgo.InteractionResponse{
+				Type: discordgo.InteractionResponseChannelMessageWithSource,
+				Data: &discordgo.InteractionResponseData{
+					Content: "### Oops! This command is not supported in DM. Please use it in a server. Join our server: https://monzim.com/uiubot",
+				},
+			})
+
+			go func() {
+				b.LogDb.Create(&models.EventLog{
+					EventType:        "DM",
+					DM:               true,
+					EventDescription: "User tried to interact with the bot in DM " + i.ApplicationCommandData().Name + " command",
+				})
+
+				data, err := json.Marshal(i)
+				if err != nil {
+					log.Error().Err(err).Msg("Error marshalling the message")
+					return
+				}
+
+				user, err := json.Marshal(s.State.User)
+				if err != nil {
+					log.Error().Err(err).Msg("Error marshalling the message")
+					return
+				}
+
+				b.LogDb.Create(&models.DMLog{
+					UserID:   s.State.User.ID,
+					Data:     data,
+					UserData: user,
+				})
+
+			}()
+
+			return
+
+		}
+
 		commands.HandleCommand(s, i, b.DB, b.LogDb)
 	})
+}
+
+func (b *Bot) ListCommands(guildID string) []*discordgo.ApplicationCommand {
+	commands, err := b.Session.ApplicationCommands(b.Session.State.User.ID, guildID)
+	if err != nil {
+		log.Error().Err(err).Msg("Cannot get commands")
+		return nil
+	}
+
+	return commands
 }
 
 func (b *Bot) RegisterCommands(commands []*discordgo.ApplicationCommand, guildID string) []*discordgo.ApplicationCommand {
@@ -66,7 +120,10 @@ func (b *Bot) RegisterCommands(commands []*discordgo.ApplicationCommand, guildID
 }
 
 func (b *Bot) RemoveCommands(commands []*discordgo.ApplicationCommand, guildID string) {
+	log.Info().Msg("Removing commands...")
+
 	for _, v := range commands {
+		log.Warn().Msgf("Removing command: %v", v.Name)
 		err := b.Session.ApplicationCommandDelete(b.Session.State.User.ID, guildID, v.ID)
 		if err != nil {
 			log.Error().Err(err).Msgf("Cannot delete '%v' command", v.Name)

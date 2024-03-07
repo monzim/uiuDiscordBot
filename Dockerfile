@@ -8,6 +8,9 @@ WORKDIR /go/src/app
 
 COPY . .
 
+# create a .env file
+RUN echo "PORT=8080" >.env
+
 RUN go get -d -v
 
 RUN go build -o main .

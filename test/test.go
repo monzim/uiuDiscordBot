@@ -14,6 +14,7 @@ import (
 	"github.com/monzim/uiuBot/models"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
 
 func trimRoomSpaces(s string) string {
@@ -98,11 +99,26 @@ func main() {
 
 	}
 
-	err = postgres.AutoMigrate(&models.Exam{})
+	err = postgres.AutoMigrate(&models.Exam{}, &models.Notice{})
 	if err != nil {
 		log.Error().Err(err).Msg("Error migrating the database")
 	}
 
+	// ScrapData(postgres)
+
+	searchTerm := "ramadan"
+	var notices []models.Notice
+
+	res := postgres.Where("title ILIKE ?", "%"+searchTerm+"%").Find(&notices)
+	if res.Error != nil {
+		log.Error().Err(res.Error).Msg("Error fetching notices")
+	}
+
+	log.Info().Msgf("Total notices: %v", len(notices))
+
+}
+
+func SeedData(postgres *gorm.DB) {
 	// get all the unique department names
 	var departments []string
 	postgres.Table("exams").Distinct("department").Pluck("department", &departments)
@@ -171,5 +187,4 @@ func main() {
 	}
 
 	log.Info().Msg("Data inserted successfully!")
-
 }

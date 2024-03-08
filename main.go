@@ -3,10 +3,8 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"fmt"
 	"os"
 	"os/signal"
-	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/joho/godotenv"
@@ -114,8 +112,9 @@ func main() {
 		})
 	}()
 
-	go pingServerStatus(myBot)
-	go statsPing(myBot)
+	go myBot.PingServerStatus()
+	go myBot.SendNotices()
+	go myBot.SendServerStatsToChannel()
 
 	// list all commands
 	myBot.ListCommands(*GuildID)
@@ -137,61 +136,6 @@ func main() {
 
 	log.Info().Msg("Gracefully shutting down.")
 
-}
-
-func pingServerStatus(myBot *bot.Bot) {
-	interval, err := time.ParseDuration(os.Getenv("STATUS_PING_INTERVAL_DURATION"))
-	if err != nil {
-		log.Error().Err(err).Msg("Error parsing the interval")
-		interval = time.Minute * 60
-	}
-
-	ticker := time.NewTicker(interval)
-	defer ticker.Stop()
-
-	startTime := time.Now()
-
-	uptime := func() time.Duration {
-		return time.Since(startTime).Round(time.Second)
-	}
-
-	for range ticker.C {
-		myBot.Session.ChannelMessageSend(os.Getenv("STATUS_CHANNEL"), fmt.Sprintf("Hello, I'm still alive! Uptime: %v", uptime()))
-	}
-}
-
-func statsPing(myBot *bot.Bot) {
-	for {
-		interval, err := time.ParseDuration(os.Getenv("USED_STATS_PING_INTERVAL_DURATION"))
-		if err != nil {
-			log.Error().Err(err).Msg("Error parsing the interval")
-			interval = time.Minute * 140
-		}
-
-		startTime := time.Now().Add(-interval)
-		myBot.LogServerStats()
-
-		var userActivity models.UserActivity
-		myBot.DB.Model(&models.UserActivity{}).Where("time_stamps > ?", startTime).Find(&userActivity)
-
-		var message string
-
-		if userActivity.CommandsExecuted > 0 {
-			if userActivity.CommandsExecuted == 1 {
-				message = fmt.Sprintf("### In the last %s, 1 command was executed", interval.String())
-			} else if userActivity.CommandsExecuted > 10 {
-				message = fmt.Sprintf("### Wow! In the last %s, %d commands were executed", interval.String(), userActivity.CommandsExecuted)
-			} else {
-				message = fmt.Sprintf("### In the last %s, %d commands were executed", interval.String(), userActivity.CommandsExecuted)
-			}
-		} else {
-			message = fmt.Sprintf("### In the last %s, no commands were executed :(", interval.String())
-		}
-
-		myBot.Session.ChannelMessageSend(os.Getenv("STATUS_CHANNEL"), message)
-
-		time.Sleep(interval)
-	}
 }
 
 func handleUnexpectedPanics() {

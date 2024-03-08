@@ -33,6 +33,8 @@ var (
 		handlerAuthor.Trigger:          handlerAuthor.Handler,
 		handlerVersion.Trigger:         handlerVersion.Handler,
 		academyCalenderHandler.Trigger: academyCalenderHandler.Handler,
+		handlerNoticeSearch.Trigger:    handlerNoticeSearch.Handler,
+		helpHandler.Trigger:            helpHandler.Handler,
 	}
 )
 
@@ -104,6 +106,8 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 		handlerAuthor.Command,
 		handlerVersion.Command,
 		academyCalenderHandler.Command,
+		handlerNoticeSearch.Command,
+		helpHandler.Command,
 	}
 }
 
@@ -125,6 +129,9 @@ func updateUserActivity(db *gorm.DB, userID string) {
 }
 
 func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gorm.DB, logDb *gorm.DB) {
+	if i.Member.User.Bot {
+		return
+	}
 
 	go func() {
 		updateUserActivity(logDb, i.Member.User.ID)

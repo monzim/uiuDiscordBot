@@ -1,22 +1,19 @@
 package commands
 
 import (
-	"crypto/md5"
-	"encoding/hex"
-	"math/rand"
-	"strconv"
 	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/monzim/uiuBot/models"
+	"github.com/monzim/uiuBot/utils"
 )
 
 var (
 	MIN_COURSE_LEN = 3
 	MIN_SEC_LEN    = 1
 	MAX_SEC_LEN    = 3
-	SUPPORT_STRING = "**Support the bot's longevity with a donation if you found it helpful. [Click here for Donate 🎁](https://monzim.com/support)**\n**Thank you!**"
+	SUPPORT_STRING = utils.SUPPORT_MESSAGE
 )
 
 var examTime = Commnad{
@@ -115,7 +112,7 @@ var examTime = Commnad{
 
 				embeds = append(embeds, &discordgo.MessageEmbed{
 					Title: exam.CourseTitle + " (" + strings.ToUpper(exam.Department) + ")",
-					Color: getColorCode(exam.CourseCode),
+					Color: utils.GenColorCode(exam.CourseCode),
 					Description: "**" + exam.CourseCode + "**\n" +
 						"Section **" + exam.Section + "**" + "     Faculty **" + exam.Teacher + "\n**\n**" + exam.ExamDate + " at " + exam.ExamTime + "**\n" + "Room " + exam.Room + "\n",
 				})
@@ -152,19 +149,4 @@ var examTime = Commnad{
 			}
 		}()
 	},
-}
-
-func getColorCode(courseCode string) int {
-	courseCode = strings.ToLower(courseCode)
-
-	hasher := md5.New()
-	hasher.Write([]byte(courseCode))
-	hash := hex.EncodeToString(hasher.Sum(nil))
-
-	colorInt, err := strconv.ParseInt(hash[:6], 16, 64)
-	if err != nil {
-		return rand.Intn(16777215)
-	}
-
-	return int(colorInt) & 0xFFFFFF
 }

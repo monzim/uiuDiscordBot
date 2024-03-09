@@ -1,6 +1,6 @@
 UIU Discord Bot License
 
-MIT License with Additional Restrictions for Non-Commercial Use and Attribution
+MIT License with Additional Restrictions for Non-Commercial Use, Attribution, and Server Usage
 
 The MIT License (MIT)
 
@@ -14,13 +14,15 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-Restrictions for Non-Commercial Use and Attribution:
+Restrictions for Non-Commercial Use, Attribution, and Server Usage:
 
 1. Non-Commercial Use: You are not allowed to use this software or any derivatives for commercial purposes.
 
-2. Attribution: You must mention the original author, Azraf Al Monzim, in any use or distribution of the software. The attribution must be visible and clearly state the original authorship.
+2. Attribution: You must mention the original author, AZRAF AL MONZIM, in any use or distribution of the software. The attribution must be visible and clearly state the original authorship.
 
-3. Project Website: You must include a visible link to the project website (monzim.com/uiubot) in any documentation, website, or other materials related to the software.
+3. Server Usage: This bot may only be used within your own Discord server only by the owner of the server not other user can use it. It is prohibited to make the bot available for use in any other servers without explicit permission from the author.
+
+4. Permission Request: To use the bot in your own server, you must first request and receive permission from the author. Contact AZRAF AL MONZIM for permission.
 
 THE SOFTWARE IS PROVIDED "AS IS," WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
@@ -29,3 +31,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+THIS LICENSE IS APPLICABLE FOR THE WHOLE PROJECT INCLUDING THE SOURCE CODE (OLDER COMMITS), DOCUMENTATION, AND ANY OTHER FILES. THE LICENSE IS ALSO APPLICABLE FOR ANY DERIVATIVE WORKS, MODIFICATIONS, AND DISTRIBUTIONS OF THE SOFTWARE.

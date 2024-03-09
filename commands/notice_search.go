@@ -6,8 +6,10 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	uiuscraper "github.com/monzim/uiu-notice-scraper"
 	"github.com/monzim/uiuBot/models"
 	"github.com/monzim/uiuBot/utils"
+	"gorm.io/gorm"
 )
 
 var (
@@ -30,6 +32,18 @@ var handlerNoticeSearch = Commnad{
 				MaxLength:   MAX_SEARCH_TERM_LEN,
 				Required:    true,
 			},
+
+			{
+				Type:        discordgo.ApplicationCommandOptionString,
+				Name:        "department",
+				Description: "Department",
+				Required:    false,
+				Choices: []*discordgo.ApplicationCommandOptionChoice{
+					{Name: "UIU", Value: uiuscraper.DepartmentAll},
+					{Name: "BSCSE", Value: uiuscraper.DepartmentCSE},
+					{Name: "BSEEE", Value: uiuscraper.DepartmentEEE},
+				},
+			},
 		},
 	},
 
@@ -44,9 +58,28 @@ var handlerNoticeSearch = Commnad{
 		}
 
 		searchTerm := optionMap["keyword"].StringValue()
+		dep := optionMap["department"]
+		if dep == nil {
+			dep = &discordgo.ApplicationCommandInteractionDataOption{
+				Name:  "department",
+				Value: "",
+			}
+		}
 
+		department := dep.Value.(string)
 		var notices []models.Notice
-		res := op.db.Where("title ILIKE ?", "%"+searchTerm+"%").Order("date asc").Find(&notices)
+
+		var res *gorm.DB
+
+		if department == "" || department == string(uiuscraper.DepartmentAll) {
+			res = op.db.Where("title ILIKE ?", "%"+searchTerm+"%").
+				Order("date asc").Find(&notices)
+		} else {
+			res = op.db.Where("title ILIKE ?", "%"+searchTerm+"%").
+				Where("department = ?", department).
+				Order("date asc").Find(&notices)
+		}
+
 		if res.Error != nil {
 			op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -60,11 +93,19 @@ var handlerNoticeSearch = Commnad{
 		}
 
 		if len(notices) == 0 {
+			if department == "" || department == string(uiuscraper.DepartmentAll) {
+				department = "UIU"
+			}
+
 			op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
 				Data: &discordgo.InteractionResponseData{
 					Content: op.in.Member.User.Mention() +
-						"** Oho! We couldn't find any notice with the keyword **" + searchTerm + "**" + "\n** " + SUPPORT_STRING,
+						"Oho! We couldn't find any notice with the keyword " + utils.Bold(searchTerm) +
+						" with the department of " + utils.Bold(department) +
+						". Please try again with a different keyword or department. " +
+						". Query take " + utils.Bold(time.Since(startTime).String()) + ". " +
+						SUPPORT_STRING,
 				},
 			})
 
@@ -73,10 +114,14 @@ var handlerNoticeSearch = Commnad{
 
 		var embeds []*discordgo.MessageEmbed
 		for _, notice := range notices {
-			notice.Title = strings.Title(notice.Title)
+			var title string
+			if notice.Department != models.Department(uiuscraper.DepartmentAll) {
+				title += "Dep. of " + string(notice.Department) + " - "
+			}
 
+			title += notice.Title
 			embed := &discordgo.MessageEmbed{
-				Title:       notice.Title,
+				Title:       strings.Title(title),
 				URL:         notice.Link,
 				Description: utils.SUPPORT_MESSAGE,
 				Image:       &discordgo.MessageEmbedImage{URL: notice.Image},
@@ -106,14 +151,19 @@ var handlerNoticeSearch = Commnad{
 			return
 		}
 
+		if department == "" || department == string(uiuscraper.DepartmentAll) {
+			department = "UIU"
+		}
+
 		op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
 				Content: op.in.Member.User.Mention() +
 					" " + "We found " +
 					utils.Bold(fmt.Sprintf("%d", len(notices))) + " " + "matching " +
-					" notices with the keyword " + utils.Bold(searchTerm) + " " +
-					"in " + utils.Bold(elapsedTime.String()) + " seconds. " +
+					" notices with the keyword " + utils.Bold(searchTerm) +
+					" with the department of " + utils.Bold(department) +
+					" in " + utils.Bold(elapsedTime.String()) + " seconds. " +
 					"Copied to your DM. " +
 					"\n" + SUPPORT_STRING,
 			},

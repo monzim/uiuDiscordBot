@@ -25,7 +25,32 @@ func (b *Bot) SendNotices() {
 	defer ticker.Stop()
 
 	for range ticker.C {
-		go b.ScrapNotices()
+		go func() {
+			defer func() {
+				if r := recover(); r != nil {
+					log.Error().Msgf("Recovered from panic: %v", r)
+				}
+			}()
+
+			b.ScrapNoticesByDepartment(
+				uiuscraper.DepartmentAll,
+				string(uiuscraper.AllowDomainUIU),
+				string(uiuscraper.Notice_Site_UIU),
+			)
+
+			b.ScrapNoticesByDepartment(
+				uiuscraper.DepartmentCSE,
+				string(uiuscraper.AllowDomainCSE),
+				string(uiuscraper.Notice_Site_CSE),
+			)
+
+			b.ScrapNoticesByDepartment(
+				uiuscraper.DepartmentEEE,
+				string(uiuscraper.AllowDomainEEE),
+				string(uiuscraper.Notice_Site_EEE),
+			)
+
+		}()
 
 		var latestNotices []models.Notice
 		res := b.DB.Where("notified = ?", false).Order("date asc").Find(&latestNotices)
@@ -42,8 +67,24 @@ func (b *Bot) SendNotices() {
 			continue
 		}
 
-		// send the notice to the channel
-		channel := os.Getenv("NOTICE_CHANNEL")
+		// send the notice to the channel_UIU
+		channel_UIU := os.Getenv("NOTICE_CHANNEL")
+		if channel_UIU == "" {
+			log.Warn().Msg("No channel found to send the notice")
+			continue
+		}
+
+		channel_CSE := os.Getenv("NOTICE_CHANNEL_CSE")
+		if channel_CSE == "" {
+			log.Warn().Msg("No channel found to send the notice")
+			continue
+		}
+
+		channel_EEE := os.Getenv("NOTICE_CHANNEL_EEE")
+		if channel_EEE == "" {
+			log.Warn().Msg("No channel found to send the notice")
+			continue
+		}
 
 		for _, notice := range latestNotices {
 			mutex.Lock()
@@ -66,7 +107,14 @@ func (b *Bot) SendNotices() {
 				},
 			}
 
-			b.Session.ChannelMessageSendEmbed(channel, embed)
+			if notice.Department == models.Department(uiuscraper.DepartmentCSE) {
+				b.Session.ChannelMessageSendEmbed(channel_CSE, embed)
+			} else if notice.Department == models.Department(uiuscraper.DepartmentEEE) {
+				b.Session.ChannelMessageSendEmbed(channel_EEE, embed)
+			} else {
+				b.Session.ChannelMessageSendEmbed(channel_UIU, embed)
+			}
+
 			notice.Notified = true
 
 			tx := b.DB.Begin()
@@ -83,22 +131,29 @@ func (b *Bot) SendNotices() {
 	}
 }
 
-func (b *Bot) ScrapNotices() {
+func (b *Bot) ScrapNoticesByDepartment(dep uiuscraper.Department, allowDomain string, noticeSite string) {
 	var latestNotice models.Notice
-	if err := b.DB.Order("date desc").First(&latestNotice).Error; err != nil {
-		log.Warn().Err(err).Msg("No latest notice found in the database")
+	if err := b.DB.Order("date desc").Where("department = ?", dep).First(&latestNotice).Error; err != nil {
+		log.Warn().Err(err).Msgf("No latest notice found in the database for department %s", dep)
 	}
 
-	notices := uiuscraper.ScrapUIU(&latestNotice.ID)
-	log.Info().Msgf("Scrapped %d notices", len(notices))
+	config := uiuscraper.NoticeScrapConfig{
+		LastNoticeId: &latestNotice.ID,
+		Department:   dep,
+		AllowDomain:  string(allowDomain),
+		NOTICE_SITE:  string(noticeSite),
+	}
 
+	notices := uiuscraper.ScrapNotice(&config)
+	log.Info().Msgf("Scrapped %d notices for department %s", len(notices), dep)
 	for _, notice := range notices {
 		var n models.Notice = models.Notice{
-			ID:    notice.ID,
-			Title: notice.Title,
-			Image: notice.Image,
-			Date:  notice.Date,
-			Link:  notice.Link,
+			ID:         notice.ID,
+			Title:      notice.Title,
+			Image:      notice.Image,
+			Date:       notice.Date,
+			Link:       notice.Link,
+			Department: models.Department(notice.Department),
 		}
 
 		if err := b.DB.FirstOrCreate(&n).Error; err != nil {
@@ -106,5 +161,5 @@ func (b *Bot) ScrapNotices() {
 		}
 	}
 
-	log.Info().Msg("Notices scrapped successfully")
+	log.Info().Msgf("Department of %s notices scrapped successfully", dep)
 }

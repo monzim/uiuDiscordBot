@@ -32,10 +32,10 @@ The latest update to the UIU Discord Bot includes the following changes:
 - **Improved Performance**: Improved the performance of the bot to make it faster and more responsive.
 - **Bug Fixes**: Fixed several bugs and issues to make the bot more stable and reliable.
 
-## 📦 Current Version Information [2.0.0-3]
+## 📦 Current Version Information [2.0.0-4]
 
 - Docker Image: **monzim/uiudiscordbot:latest**
-- Docker Image Version: **2.0.0-3**
+- Docker Image Version: **2.0.0-4**
 
 ## 🤝 Contributing
 

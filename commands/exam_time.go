@@ -97,7 +97,10 @@ var examTime = Commnad{
 					Type: discordgo.InteractionResponseChannelMessageWithSource,
 					Data: &discordgo.InteractionResponseData{
 						Content: op.in.Member.User.Mention() +
-							" **NO INFO FOUND** for Dep. " + department + " with course code " + courseCode + " and section " + section + "\n" + SUPPORT_STRING,
+							" **I couldn't find any exam time for Dep. ** " +
+							utils.Bold(department) + " with course code " + utils.Bold(courseCode) + " and section " + utils.Bold(section) +
+							". You may have entered course code incorrectly. Here is an example: `2213` or `cse 2213`. " +
+							"\n" + SUPPORT_STRING,
 					},
 				})
 				return

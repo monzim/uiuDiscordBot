@@ -7,7 +7,7 @@ import (
 )
 
 var VERSION = "2.0.0-3"
-var BUILD = time.Date(2024, time.March, 7, 01, 2, 17, 0, time.UTC)
+var BUILD = time.Date(2024, time.March, 9, 01, 10, 33, 0, time.UTC)
 
 var handlerVersion = Commnad{
 	Trigger: "version",

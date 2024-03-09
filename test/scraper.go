@@ -14,15 +14,22 @@ func ScrapData(db *gorm.DB) {
 		fmt.Println("No latest notice found in the database")
 	}
 
-	notices := uiuscraper.ScrapUIU(&latestNotice.ID)
+	config := uiuscraper.NoticeScrapConfig{
+		LastNoticeId: &latestNotice.ID,
+		Department:   uiuscraper.DepartmentAll,
+		AllowDomain:  string(uiuscraper.DepartmentAll),
+		NOTICE_SITE:  string(uiuscraper.Notice_Site_UIU),
+	}
 
+	notices := uiuscraper.ScrapNotice(&config)
 	for _, notice := range notices {
 		var n models.Notice = models.Notice{
-			ID:    notice.ID,
-			Title: notice.Title,
-			Image: notice.Image,
-			Date:  notice.Date,
-			Link:  notice.Link,
+			ID:         notice.ID,
+			Title:      notice.Title,
+			Image:      notice.Image,
+			Date:       notice.Date,
+			Link:       notice.Link,
+			Department: models.Department(notice.Department),
 		}
 
 		if err := db.FirstOrCreate(&n).Error; err != nil {

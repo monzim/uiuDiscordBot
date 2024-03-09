@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	uiuscraper "github.com/monzim/uiu-notice-scraper"
 	db "github.com/monzim/uiuBot/database"
 	"github.com/monzim/uiuBot/models"
 	"github.com/rs/zerolog"
@@ -104,17 +105,23 @@ func main() {
 		log.Error().Err(err).Msg("Error migrating the database")
 	}
 
-	// ScrapData(postgres)
+	// searchTerm := "ramadan"
+	// var notices []models.Notice
 
-	searchTerm := "ramadan"
-	var notices []models.Notice
+	// res := postgres.Where("title ILIKE ?", "%"+searchTerm+"%").Find(&notices)
+	// if res.Error != nil {
+	// 	log.Error().Err(res.Error).Msg("Error fetching notices")
+	// }
 
-	res := postgres.Where("title ILIKE ?", "%"+searchTerm+"%").Find(&notices)
-	if res.Error != nil {
-		log.Error().Err(res.Error).Msg("Error fetching notices")
+	// log.Info().Msgf("Total notices: %v", len(notices))
+
+	var latestNotice models.Notice
+	if err := postgres.Order("date desc").Where("department = ?", uiuscraper.DepartmentCSE).
+		First(&latestNotice).Error; err != nil {
+		log.Warn().Err(err).Msg("No latest notice found in the database")
 	}
 
-	log.Info().Msgf("Total notices: %v", len(notices))
+	log.Info().Msgf("Latest notice: %v", latestNotice)
 
 }
 

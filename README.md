@@ -15,6 +15,7 @@ The following commands are currently available:
 
 - `/academy-calender`: Replies with the current academy calendar.
 - `/author`: Replies with the author's information.
+- `/configure`: Configure the bot with the necessary information.
 - `/exam-time`: Get your exam time information.
 - `/holiday`: Get the upcoming holiday details.
 - `/installment`: Get the upcoming installment details.
@@ -28,6 +29,12 @@ The following commands are currently available:
 The latest update to the UIU Discord Bot includes the following changes:
 
 <!-- date -->
+
+#### (March 10, 2024)
+
+- **Configure**: Added the ability to configure the bot with the necessary information.
+- **Improved Performance**: Improved the performance of the bot to make it faster and more responsive.
+- **Bug Fixes**: Fixed several bugs and issues to make the bot more stable and reliable.
 
 #### Version 2.0.0-4 (March 09, 2024)
 

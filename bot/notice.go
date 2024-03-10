@@ -94,10 +94,29 @@ func (b *Bot) SendNotices() {
 				notice.Title = notice.Title[:256]
 			}
 
+			uiuRoleID := os.Getenv("UIU_ROLE_ID")
+			CSERoleID := os.Getenv("CSE_ROLE_ID")
+			EEERoleID := os.Getenv("EEE_ROLE_ID")
+			BBARoleID := os.Getenv("BBA_ROLE_ID")
+
+			var mentionRoleID string
+			switch notice.Department {
+			case models.Department(uiuscraper.DepartmentCSE):
+				mentionRoleID = CSERoleID
+			case models.Department(uiuscraper.DepartmentEEE):
+				mentionRoleID = EEERoleID
+			case models.Department(uiuscraper.DepartmentBBA):
+				mentionRoleID = BBARoleID
+			case models.Department(uiuscraper.DepartmentAll):
+				mentionRoleID = uiuRoleID
+			}
+
+			mentionRoleID = "<@&" + mentionRoleID + ">"
+
 			embed := &discordgo.MessageEmbed{
 				Title:       notice.Title,
 				URL:         notice.Link,
-				Description: utils.SUPPORT_MESSAGE,
+				Description: mentionRoleID + " " + utils.SUPPORT_MESSAGE,
 				Image:       &discordgo.MessageEmbedImage{URL: notice.Image},
 				Color:       utils.GenColorCode(notice.Title),
 				Timestamp:   notice.Date.Format(time.RFC3339),

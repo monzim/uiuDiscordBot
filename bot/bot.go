@@ -46,7 +46,6 @@ func (b *Bot) Close() {
 
 func (b *Bot) AddCommandHandlers() {
 	b.Session.AddHandler(func(s *discordgo.Session, i *discordgo.InteractionCreate) {
-
 		if i.GuildID == "" {
 			log.Info().Msg("Ignoring DM interaction")
 
@@ -85,10 +84,15 @@ func (b *Bot) AddCommandHandlers() {
 			}()
 
 			return
-
 		}
 
-		commands.HandleCommand(s, i, b.DB, b.LogDb)
+		switch i.Type {
+		case discordgo.InteractionApplicationCommand:
+			commands.HandleCommand(s, i, b.DB, b.LogDb)
+
+		case discordgo.InteractionMessageComponent:
+			commands.HandlerComponents(s, i, b.DB, b.LogDb)
+		}
 	})
 }
 

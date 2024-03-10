@@ -20,6 +20,7 @@ The following commands are currently available:
 - `/holiday`: Get the upcoming holiday details.
 - `/installment`: Get the upcoming installment details.
 - `/ping`: Replies with pong and the latency of the bot.
+- `/ramadan-calendar`: Replies with the current Ramadan calendar.
 - `/search-notice`: Search notice with any keyword (e.g. `/search-notice exam`).
 - `upcoming-exam`: Replies with the upcoming exam information.
 - `/version`: Replies with the bot version.
@@ -30,9 +31,11 @@ The latest update to the UIU Discord Bot includes the following changes:
 
 <!-- date -->
 
-#### (March 10, 2024)
+#### 2.0.0-5 (March 10, 2024)
 
 - **Configure**: Added the ability to configure the bot with the necessary information.
+- **New Commands**: Added new commands for ramadan-calendar.
+- **Notice Channel**: Added two new notice channels for CE and Pharmacy departments.
 - **Improved Performance**: Improved the performance of the bot to make it faster and more responsive.
 - **Bug Fixes**: Fixed several bugs and issues to make the bot more stable and reliable.
 

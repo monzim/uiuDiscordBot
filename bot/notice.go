@@ -50,6 +50,18 @@ func (b *Bot) SendNotices() {
 				string(uiuscraper.Notice_Site_EEE),
 			)
 
+			b.ScrapNoticesByDepartment(
+				uiuscraper.DepartmentCivil,
+				string(uiuscraper.AllowDomainCE),
+				string(uiuscraper.Notice_Site_CE),
+			)
+
+			b.ScrapNoticesByDepartment(
+				uiuscraper.DepartmentPharmacy,
+				string(uiuscraper.AllowDomainPharmacy),
+				string(uiuscraper.Notice_Site_Pharmacy),
+			)
+
 		}()
 
 		var latestNotices []models.Notice
@@ -70,19 +82,31 @@ func (b *Bot) SendNotices() {
 		// send the notice to the channel_UIU
 		channel_UIU := os.Getenv("NOTICE_CHANNEL")
 		if channel_UIU == "" {
-			log.Warn().Msg("No channel found to send the notice")
+			log.Warn().Msg("No channel found to send the notice for UIU")
 			continue
 		}
 
 		channel_CSE := os.Getenv("NOTICE_CHANNEL_CSE")
 		if channel_CSE == "" {
-			log.Warn().Msg("No channel found to send the notice")
+			log.Warn().Msg("No channel found to send the notice for CSE")
 			continue
 		}
 
 		channel_EEE := os.Getenv("NOTICE_CHANNEL_EEE")
 		if channel_EEE == "" {
-			log.Warn().Msg("No channel found to send the notice")
+			log.Warn().Msg("No channel found to send the notice for EEE")
+			continue
+		}
+
+		channel_CE := os.Getenv("NOTICE_CHANNEL_CE")
+		if channel_CE == "" {
+			log.Warn().Msg("No channel found to send the notice for CE")
+			continue
+		}
+
+		channel_Pharmacy := os.Getenv("NOTICE_CHANNEL_PHARMACY")
+		if channel_Pharmacy == "" {
+			log.Warn().Msg("No channel found to send the notice for Pharmacy")
 			continue
 		}
 
@@ -97,18 +121,36 @@ func (b *Bot) SendNotices() {
 			uiuRoleID := os.Getenv("UIU_ROLE_ID")
 			CSERoleID := os.Getenv("CSE_ROLE_ID")
 			EEERoleID := os.Getenv("EEE_ROLE_ID")
-			BBARoleID := os.Getenv("BBA_ROLE_ID")
+			CERoleID := os.Getenv("CE_ROLE_ID")
+			PharmacyRoleID := os.Getenv("PHARMACY_ROLE_ID")
 
 			var mentionRoleID string
+			var sendChannelID string
+
 			switch notice.Department {
-			case models.Department(uiuscraper.DepartmentCSE):
-				mentionRoleID = CSERoleID
-			case models.Department(uiuscraper.DepartmentEEE):
-				mentionRoleID = EEERoleID
-			case models.Department(uiuscraper.DepartmentBBA):
-				mentionRoleID = BBARoleID
 			case models.Department(uiuscraper.DepartmentAll):
 				mentionRoleID = uiuRoleID
+				sendChannelID = channel_UIU
+
+			case models.Department(uiuscraper.DepartmentCSE):
+				mentionRoleID = CSERoleID
+				sendChannelID = channel_CSE
+
+			case models.Department(uiuscraper.DepartmentEEE):
+				mentionRoleID = EEERoleID
+				sendChannelID = channel_EEE
+
+			case models.Department(uiuscraper.DepartmentCivil):
+				mentionRoleID = CERoleID
+				sendChannelID = channel_CE
+
+			case models.Department(uiuscraper.DepartmentPharmacy):
+				mentionRoleID = PharmacyRoleID
+				sendChannelID = channel_Pharmacy
+
+			default:
+				mentionRoleID = uiuRoleID
+				sendChannelID = channel_UIU
 			}
 
 			mentionRoleID = "<@&" + mentionRoleID + ">"
@@ -126,14 +168,7 @@ func (b *Bot) SendNotices() {
 				},
 			}
 
-			if notice.Department == models.Department(uiuscraper.DepartmentCSE) {
-				b.Session.ChannelMessageSendEmbed(channel_CSE, embed)
-			} else if notice.Department == models.Department(uiuscraper.DepartmentEEE) {
-				b.Session.ChannelMessageSendEmbed(channel_EEE, embed)
-			} else {
-				b.Session.ChannelMessageSendEmbed(channel_UIU, embed)
-			}
-
+			b.Session.ChannelMessageSendEmbed(sendChannelID, embed)
 			notice.Notified = true
 
 			tx := b.DB.Begin()
@@ -177,6 +212,10 @@ func (b *Bot) ScrapNoticesByDepartment(dep uiuscraper.Department, allowDomain st
 
 		if err := b.DB.FirstOrCreate(&n).Error; err != nil {
 			log.Error().Err(err).Msg("Error creating the notice")
+		}
+
+		if err := b.LogDb.FirstOrCreate(&n).Error; err != nil {
+			log.Error().Err(err).Msg("Error creating the notice in the log")
 		}
 	}
 

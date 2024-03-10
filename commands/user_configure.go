@@ -7,6 +7,7 @@ import (
 	uiuscraper "github.com/monzim/uiu-notice-scraper"
 	"github.com/monzim/uiuBot/models"
 	"github.com/rs/zerolog/log"
+	"gorm.io/gorm"
 )
 
 var (
@@ -26,21 +27,25 @@ var (
 			uiuRoleID := os.Getenv("UIU_ROLE_ID")
 			CSERoleID := os.Getenv("CSE_ROLE_ID")
 			EEERoleID := os.Getenv("EEE_ROLE_ID")
-			BBARoleID := os.Getenv("BBA_ROLE_ID")
+			CERoleID := os.Getenv("CE_ROLE_ID")
+			PharmacyRoleID := os.Getenv("PHARMACY_ROLE_ID")
 
 			switch dep {
 			case models.Department(uiuscraper.DepartmentCSE):
 				depRoleID = CSERoleID
 			case models.Department(uiuscraper.DepartmentEEE):
 				depRoleID = EEERoleID
-			case models.Department(uiuscraper.DepartmentBBA):
-				depRoleID = BBARoleID
+			case models.Department(uiuscraper.DepartmentCivil):
+				depRoleID = CERoleID
+			case models.Department(uiuscraper.DepartmentPharmacy):
+				depRoleID = PharmacyRoleID
+
 			}
 
 			userRoles := op.in.Member.Roles
 			haveUIURole := false
 			for _, rid := range userRoles {
-				if rid == CSERoleID || rid == EEERoleID || rid == BBARoleID {
+				if rid == CSERoleID || rid == EEERoleID || rid == CERoleID || rid == PharmacyRoleID {
 					if err := op.ses.GuildMemberRoleRemove(serverId, userId, rid); err != nil {
 						log.Error().Err(err).Msgf("failed to remove role %s from user %s", rid, userId)
 					}
@@ -85,41 +90,8 @@ var (
 				},
 			})
 
-			var user models.UserDetails
-			if err := op.db.Where("user_id = ? AND server_id = ?", userId, serverId).First(&user).Error; err != nil {
-				user = models.UserDetails{
-					UserID:        userId,
-					ServerID:      serverId,
-					Department:    dep,
-					Username:      op.in.Member.User.Username,
-					AvatarURL:     op.in.Member.User.AvatarURL(""),
-					JoinedAt:      op.in.Member.JoinedAt,
-					Email:         op.in.Member.User.Email,
-					Avatar:        op.in.Member.User.Avatar,
-					Locale:        op.in.Member.User.Locale,
-					Discriminator: op.in.Member.User.Discriminator,
-					Token:         op.in.Member.User.Token,
-					Verified:      op.in.Member.User.Verified,
-					MFAEnabled:    op.in.Member.User.MFAEnabled,
-					Banner:        op.in.Member.User.Banner,
-					AccentColor:   op.in.Member.User.AccentColor,
-					Bot:           op.in.Member.User.Bot,
-					PremiumType:   op.in.Member.User.PremiumType,
-					System:        op.in.Member.User.System,
-					Flags:         op.in.Member.User.Flags,
-				}
-
-				if err := op.db.FirstOrCreate(&user).Error; err != nil {
-					log.Error().Err(err).Msgf("failed to create user %s", userId)
-				}
-
-			} else {
-				// user found, update department
-				user.Department = dep
-				if err := op.db.Save(&user).Error; err != nil {
-					log.Error().Err(err).Msgf("failed to update user %s", userId)
-				}
-			}
+			updateUseDetails(op.db, op.in, dep, userId, serverId)
+			updateUseDetails(op.logDB, op.in, dep, userId, serverId)
 		},
 	}
 
@@ -149,21 +121,35 @@ var (
 											Label: "Dep. of CSE",
 											Value: string(uiuscraper.DepartmentCSE),
 											Emoji: discordgo.ComponentEmoji{
-												Name: "👨‍🎓",
+												Name: "👨🏻‍💻",
 											},
 										},
 										{
 											Label: "Dep. of EEE",
 											Value: string(uiuscraper.DepartmentEEE),
 											Emoji: discordgo.ComponentEmoji{
-												Name: "👩‍🎓",
+												Name: "⚡",
 											},
 										},
 										{
-											Label: "Dep. of BBA",
-											Value: string(uiuscraper.DepartmentBBA),
+											Label: "Dep. of CE",
+											Value: string(uiuscraper.DepartmentCivil),
 											Emoji: discordgo.ComponentEmoji{
-												Name: "👨‍💼",
+												Name: "👷🏻",
+											},
+										},
+										{
+											Label: "Dep. of Pharmacy",
+											Value: string(uiuscraper.DepartmentPharmacy),
+											Emoji: discordgo.ComponentEmoji{
+												Name: "💊",
+											},
+										},
+										{
+											Label: "Not listed",
+											Value: string(uiuscraper.DepartmentAll),
+											Emoji: discordgo.ComponentEmoji{
+												Name: "🤷",
 											},
 										},
 									},
@@ -189,3 +175,41 @@ var (
 		},
 	}
 )
+
+func updateUseDetails(db *gorm.DB, in *discordgo.InteractionCreate, dep models.Department, userId, serverId string) {
+	var user models.UserDetails
+	if err := db.Where("user_id = ? AND server_id = ?", userId, serverId).First(&user).Error; err != nil {
+		user = models.UserDetails{
+			UserID:        userId,
+			ServerID:      serverId,
+			Department:    dep,
+			Username:      in.Member.User.Username,
+			AvatarURL:     in.Member.User.AvatarURL(""),
+			JoinedAt:      in.Member.JoinedAt,
+			Email:         in.Member.User.Email,
+			Avatar:        in.Member.User.Avatar,
+			Locale:        in.Member.User.Locale,
+			Discriminator: in.Member.User.Discriminator,
+			Token:         in.Member.User.Token,
+			Verified:      in.Member.User.Verified,
+			MFAEnabled:    in.Member.User.MFAEnabled,
+			Banner:        in.Member.User.Banner,
+			AccentColor:   in.Member.User.AccentColor,
+			Bot:           in.Member.User.Bot,
+			PremiumType:   in.Member.User.PremiumType,
+			System:        in.Member.User.System,
+			Flags:         in.Member.User.Flags,
+		}
+
+		if err := db.FirstOrCreate(&user).Error; err != nil {
+			log.Error().Err(err).Msgf("failed to create user %s", userId)
+		}
+
+	} else {
+		// user found, update department
+		user.Department = dep
+		if err := db.Save(&user).Error; err != nil {
+			log.Error().Err(err).Msgf("failed to update user %s", userId)
+		}
+	}
+}

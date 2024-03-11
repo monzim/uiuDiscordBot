@@ -22,6 +22,8 @@ var allCommands = []lol{
 	{Name: handlerVersion.Trigger, Description: handlerVersion.Command.Description},
 	{Name: academyCalenderHandler.Trigger, Description: academyCalenderHandler.Command.Description},
 	{Name: handlerNoticeSearch.Trigger, Description: handlerNoticeSearch.Command.Description},
+	{Name: handlerUserConfigure.Trigger, Description: handlerUserConfigure.Command.Description},
+	{Name: handlerRamadanCalender.Trigger, Description: handlerRamadanCalender.Command.Description},
 }
 
 var helpHandler = Commnad{

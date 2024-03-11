@@ -23,21 +23,6 @@ type Commnad struct {
 	Handler func(op *options)
 }
 
-var (
-	commandHandlers = map[string]func(op *options){
-		ping.Trigger:                   ping.Handler,
-		examTime.Trigger:               examTime.Handler,
-		upcomingExam.Trigger:           upcomingExam.Handler,
-		installmentHandler.Trigger:     installmentHandler.Handler,
-		holidayHandler.Trigger:         holidayHandler.Handler,
-		handlerAuthor.Trigger:          handlerAuthor.Handler,
-		handlerVersion.Trigger:         handlerVersion.Handler,
-		academyCalenderHandler.Trigger: academyCalenderHandler.Handler,
-		handlerNoticeSearch.Trigger:    handlerNoticeSearch.Handler,
-		helpHandler.Trigger:            helpHandler.Handler,
-	}
-)
-
 func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 	var departments []string
 	var departmentOptions []*discordgo.ApplicationCommandOptionChoice
@@ -108,6 +93,8 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 		academyCalenderHandler.Command,
 		handlerNoticeSearch.Command,
 		helpHandler.Command,
+		handlerUserConfigure.Command,
+		handlerRamadanCalender.Command,
 	}
 }
 
@@ -128,6 +115,23 @@ func updateUserActivity(db *gorm.DB, userID string) {
 	})
 }
 
+var (
+	commandHandlers = map[string]func(op *options){
+		ping.Trigger:                   ping.Handler,
+		examTime.Trigger:               examTime.Handler,
+		upcomingExam.Trigger:           upcomingExam.Handler,
+		installmentHandler.Trigger:     installmentHandler.Handler,
+		holidayHandler.Trigger:         holidayHandler.Handler,
+		handlerAuthor.Trigger:          handlerAuthor.Handler,
+		handlerVersion.Trigger:         handlerVersion.Handler,
+		academyCalenderHandler.Trigger: academyCalenderHandler.Handler,
+		handlerNoticeSearch.Trigger:    handlerNoticeSearch.Handler,
+		helpHandler.Trigger:            helpHandler.Handler,
+		handlerUserConfigure.Trigger:   handlerUserConfigure.Handler,
+		handlerRamadanCalender.Trigger: handlerRamadanCalender.Handler,
+	}
+)
+
 func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gorm.DB, logDb *gorm.DB) {
 	if i.Member.User.Bot {
 		return
@@ -145,12 +149,13 @@ func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gor
 		})
 
 		// add or update user details
-		var user models.UserDetails
-		serverId := i.GuildID
 
-		if err := logDb.FirstOrCreate(&user, models.UserDetails{
+		serverId := i.GuildID
+		userID := i.Member.User.ID
+
+		user := models.UserDetails{
 			ServerID:      serverId,
-			UserID:        i.Member.User.ID,
+			UserID:        userID,
 			Username:      i.Member.User.Username,
 			AvatarURL:     i.Member.User.AvatarURL(""),
 			JoinedAt:      i.Member.JoinedAt,
@@ -167,30 +172,36 @@ func HandleCommand(s *discordgo.Session, i *discordgo.InteractionCreate, db *gor
 			PremiumType:   i.Member.User.PremiumType,
 			System:        i.Member.User.System,
 			Flags:         i.Member.User.Flags,
-		}).Error; err != nil {
-			return
 		}
 
-		logDb.Model(&user).Updates(models.UserDetails{
-			ServerID:      serverId,
-			UserID:        i.Member.User.ID,
-			Username:      i.Member.User.Username,
-			AvatarURL:     i.Member.User.AvatarURL(""),
-			JoinedAt:      i.Member.JoinedAt,
-			Email:         i.Member.User.Email,
-			Avatar:        i.Member.User.Avatar,
-			Locale:        i.Member.User.Locale,
-			Discriminator: i.Member.User.Discriminator,
-			Token:         i.Member.User.Token,
-			Verified:      i.Member.User.Verified,
-			MFAEnabled:    i.Member.User.MFAEnabled,
-			Banner:        i.Member.User.Banner,
-			AccentColor:   i.Member.User.AccentColor,
-			Bot:           i.Member.User.Bot,
-			PremiumType:   i.Member.User.PremiumType,
-			System:        i.Member.User.System,
-			Flags:         i.Member.User.Flags,
-		})
+		// check if user exists
+		if err := logDb.Where("user_id = ? AND server_id = ?", userID, serverId).First(&user).Error; err != nil {
+			if err := logDb.FirstOrCreate(&user).Error; err != nil {
+				log.Error().Err(err).Msgf("failed to create user %s", userID)
+			}
+		} else {
+			// user found, update department
+			if err := logDb.Model(&user).Updates(models.UserDetails{
+				Username:      i.Member.User.Username,
+				AvatarURL:     i.Member.User.AvatarURL(""),
+				JoinedAt:      i.Member.JoinedAt,
+				Email:         i.Member.User.Email,
+				Avatar:        i.Member.User.Avatar,
+				Locale:        i.Member.User.Locale,
+				Discriminator: i.Member.User.Discriminator,
+				Token:         i.Member.User.Token,
+				Verified:      i.Member.User.Verified,
+				MFAEnabled:    i.Member.User.MFAEnabled,
+				Banner:        i.Member.User.Banner,
+				AccentColor:   i.Member.User.AccentColor,
+				Bot:           i.Member.User.Bot,
+				PremiumType:   i.Member.User.PremiumType,
+				System:        i.Member.User.System,
+				Flags:         i.Member.User.Flags,
+			}).Error; err != nil {
+				log.Error().Err(err).Msgf("failed to update user %s", userID)
+			}
+		}
 
 	}()
 

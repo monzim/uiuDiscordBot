@@ -53,6 +53,8 @@ github.com/mattn/go-isatty v0.0.20 h1:xfD0iDuEKnDkl03q4limB+vH+GxLEtL/jb4xVJSWWE
 github.com/mattn/go-isatty v0.0.20/go.mod h1:W+V8PltTTMOvKvAeJH7IuucS94S2C6jfK/D7dTCTo3Y=
 github.com/monzim/uiu-notice-scraper v0.0.0-20240309141326-fc5db04931ff h1:qFwBM0KLnw6wVFOokOw7MvFkuCl8CE2Iy4GVMxOQ46c=
 github.com/monzim/uiu-notice-scraper v0.0.0-20240309141326-fc5db04931ff/go.mod h1:2mSgxkP2CYggskO75zBp/vOKdGoo5J3hzBsn7ZzbYWI=
+github.com/monzim/uiu-notice-scraper v0.0.0-20240310160236-0b854ecdcc88 h1:i4OZP446wVeU8nZ3P911JNCE11sfbvSgp6oU2lm1waI=
+github.com/monzim/uiu-notice-scraper v0.0.0-20240310160236-0b854ecdcc88/go.mod h1:2mSgxkP2CYggskO75zBp/vOKdGoo5J3hzBsn7ZzbYWI=
 github.com/pkg/errors v0.9.1/go.mod h1:bwawxfHBFNV+L2hUp1rHADufV3IMtnDRdf1r5NINEl0=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=

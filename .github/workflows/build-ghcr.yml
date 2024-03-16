@@ -7,7 +7,7 @@ on:
 env:
   SHORT_SHA: ${{ github.sha }}
   IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || 'dev' }}
-  IMAGE_NAME: "uiubot"
+  IMAGE_NAME: ${{ github.repository_owner }}/uiubot
 
 jobs:
   build-and-push:

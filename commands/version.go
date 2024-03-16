@@ -6,8 +6,8 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var VERSION = "2.0.0-4"
-var BUILD = time.Date(2024, time.March, 10, 22, 45, 01, 0, time.UTC)
+var VERSION = "2.0.0"
+var BUILD = time.Date(2024, time.March, 16, 20, 45, 01, 0, time.UTC)
 
 var handlerVersion = Commnad{
 	Trigger: "version",

@@ -31,7 +31,7 @@ The latest update to the UIU Discord Bot includes the following changes:
 
 <!-- date -->
 
-#### 2.0.0-5 (March 10, 2024)
+#### 2.0.0 (March 10, 2024)
 
 - **Configure**: Added the ability to configure the bot with the necessary information.
 - **New Commands**: Added new commands for ramadan-calendar.

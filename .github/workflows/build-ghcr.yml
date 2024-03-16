@@ -7,6 +7,7 @@ on:
 env:
   SHORT_SHA: ${{ github.sha }}
   IMAGE_TAG: ${{ contains(github.event.head_commit.message, '#latest')  && 'latest' || 'dev' }}
+  IMAGE_NAME: "uiubot"
 
 jobs:
   build-and-push:
@@ -34,8 +35,8 @@ jobs:
 
       - name: 🏗️ Build and push
         run: |
-          docker build -t ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }} -t ghcr.io/${{ github.repository }}:latest -t ghcr.io/${{ github.repository }}:${{ env.SHORT_SHA }} .
+          docker build -t ghcr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -t ghcr.io/${{ env.IMAGE_NAME }}:latest -t ghcr.io/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }} .
 
-          docker push ghcr.io/${{ github.repository }}:${{ env.IMAGE_TAG }}
-          docker push ghcr.io/${{ github.repository }}:latest
-          docker push ghcr.io/${{ github.repository }}:${{ env.SHORT_SHA }}
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:latest

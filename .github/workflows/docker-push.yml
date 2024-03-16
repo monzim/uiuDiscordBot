@@ -5,7 +5,7 @@ on:
     branches:
       - live
   release:
-    types: [published]
+    types: [published, released]
 
 env:
   IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref || contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}

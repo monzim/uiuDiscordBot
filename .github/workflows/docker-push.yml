@@ -1,4 +1,4 @@
-name: Docker Build and Push to Amazon ECR
+name: Build and Push to Registry
 
 on:
   push:
@@ -17,19 +17,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Check the current directory
-        run: pwd
-
-      - name: See what's in the current directory
-        run: ls -a
-
       - name: Setup Go 1.22.x
         uses: actions/setup-go@v4
         with:
           go-version: "1.22.x"
-
-      - name: Display Go version
-        run: go version
 
       - name: Install Go dependencies
         run: go mod download

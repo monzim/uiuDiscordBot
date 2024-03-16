@@ -27,7 +27,7 @@ WORKDIR /app
 
 COPY --from=builder /go/src/app/main .
 
-COPY .env .
+RUN echo "PORT=8080" >.env
 
 EXPOSE 8080
 

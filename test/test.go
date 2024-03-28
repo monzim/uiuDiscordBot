@@ -1,13 +1,7 @@
 package main
 
 import (
-	"crypto/sha256"
-	"encoding/csv"
-	"encoding/json"
-	"fmt"
 	"os"
-	"strings"
-	"time"
 
 	"github.com/joho/godotenv"
 	uiuscraper "github.com/monzim/uiu-notice-scraper"
@@ -15,64 +9,63 @@ import (
 	"github.com/monzim/uiuBot/models"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"gorm.io/gorm"
 )
 
-func trimRoomSpaces(s string) string {
-	return strings.ReplaceAll(s, "  ", "")
-}
+// func trimRoomSpaces(s string) string {
+// 	return strings.ReplaceAll(s, "  ", "")
+// }
 
-func generateID(courseCode, section, room string) string {
-	hashInput := fmt.Sprintf("%s-%s-%s", courseCode, section, room)
-	hash := sha256.Sum256([]byte(hashInput))
-	return fmt.Sprintf("%x", hash)
-}
+// func generateID(courseCode, section, room string) string {
+// 	hashInput := fmt.Sprintf("%s-%s-%s", courseCode, section, room)
+// 	hash := sha256.Sum256([]byte(hashInput))
+// 	return fmt.Sprintf("%x", hash)
+// }
 
-func csvToJSON(csvFilePath, jsonFilePath string) ([]models.Exam, error) {
-	csvFile, err := os.Open(csvFilePath)
-	if err != nil {
-		return nil, err
-	}
-	defer csvFile.Close()
+// func csvToJSON(csvFilePath, jsonFilePath string) ([]models.Exam, error) {
+// 	csvFile, err := os.Open(csvFilePath)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer csvFile.Close()
 
-	csvReader := csv.NewReader(csvFile)
-	csvData, err := csvReader.ReadAll()
-	if err != nil {
-		return nil, err
-	}
+// 	csvReader := csv.NewReader(csvFile)
+// 	csvData, err := csvReader.ReadAll()
+// 	if err != nil {
+// 		return nil, err
+// 	}
 
-	var exams []models.Exam
+// 	var exams []models.Exam
 
-	for _, row := range csvData[1:] {
-		exam := models.Exam{
-			ID:          generateID(row[1], row[3], trimRoomSpaces(row[7])),
-			Department:  strings.ToLower(strings.TrimSpace(row[0])),
-			CourseCode:  strings.ToLower(strings.TrimSpace(row[1])),
-			CourseTitle: strings.ToLower(strings.TrimSpace(row[2])),
-			Section:     strings.ToLower(strings.TrimSpace(row[3])),
-			Teacher:     row[4],
-			ExamDate:    row[5],
-			ExamTime:    row[6],
-			Room:        trimRoomSpaces(row[7]),
-		}
-		exams = append(exams, exam)
-	}
+// 	for _, row := range csvData[1:] {
+// 		exam := models.Exam{
+// 			ID:          generateID(row[1], row[3], trimRoomSpaces(row[7])),
+// 			Department:  strings.ToLower(strings.TrimSpace(row[0])),
+// 			CourseCode:  strings.ToLower(strings.TrimSpace(row[1])),
+// 			CourseTitle: strings.ToLower(strings.TrimSpace(row[2])),
+// 			Section:     strings.ToLower(strings.TrimSpace(row[3])),
+// 			Teacher:     row[4],
+// 			ExamDate:    row[5],
+// 			ExamTime:    row[6],
+// 			Room:        trimRoomSpaces(row[7]),
+// 		}
+// 		exams = append(exams, exam)
+// 	}
 
-	jsonFile, err := os.Create(jsonFilePath)
-	if err != nil {
-		return nil, err
-	}
-	defer jsonFile.Close()
+// 	jsonFile, err := os.Create(jsonFilePath)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer jsonFile.Close()
 
-	jsonEncoder := json.NewEncoder(jsonFile)
-	jsonEncoder.SetIndent("", "    ") // Optional: Set indentation for better readability
-	if err := jsonEncoder.Encode(exams); err != nil {
-		return nil, err
-	}
+// 	jsonEncoder := json.NewEncoder(jsonFile)
+// 	jsonEncoder.SetIndent("", "    ") // Optional: Set indentation for better readability
+// 	if err := jsonEncoder.Encode(exams); err != nil {
+// 		return nil, err
+// 	}
 
-	fmt.Println("Conversion successful!")
-	return exams, nil
-}
+// 	fmt.Println("Conversion successful!")
+// 	return exams, nil
+// }
 
 func main() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
@@ -105,93 +98,92 @@ func main() {
 		log.Error().Err(err).Msg("Error migrating the database")
 	}
 
-	// searchTerm := "ramadan"
-	// var notices []models.Notice
+	var notices []models.Notice
 
-	// res := postgres.Where("title ILIKE ?", "%"+searchTerm+"%").Find(&notices)
-	// if res.Error != nil {
-	// 	log.Error().Err(res.Error).Msg("Error fetching notices")
-	// }
-
-	// log.Info().Msgf("Total notices: %v", len(notices))
-
-	var latestNotice models.Notice
-	if err := postgres.Order("date desc").Where("department = ?", uiuscraper.DepartmentCSE).
-		First(&latestNotice).Error; err != nil {
-		log.Warn().Err(err).Msg("No latest notice found in the database")
+	res := postgres.Where("department = ?", "").Select("id, department, date").Find(&notices)
+	if res.Error != nil {
+		log.Error().Err(res.Error).Msg("Error fetching notices")
 	}
 
-	log.Info().Msgf("Latest notice: %v", latestNotice)
+	for i, notice := range notices {
+		notice.Department = models.Department(uiuscraper.DepartmentAll)
+		res := postgres.Save(&notice)
+		if res.Error != nil {
+			log.Error().Err(res.Error).Msgf("%d Error updating the notice", i)
+		}
+
+	}
+
+	// get the count of notices per department
+	cases := []struct {
+		testName    string
+		department  uiuscraper.Department
+		allowDomain string
+		noticeSite  string
+	}{
+		{"UIU Notices", uiuscraper.DepartmentAll, uiuscraper.AllowDomainUIU, uiuscraper.Notice_Site_UIU},
+		{"CSE Notices", uiuscraper.DepartmentCSE, uiuscraper.AllowDomainCSE, uiuscraper.Notice_Site_CSE},
+		{"EEE Notices", uiuscraper.DepartmentEEE, uiuscraper.AllowDomainEEE, uiuscraper.Notice_Site_EEE},
+		{"CE Notices", uiuscraper.DepartmentCivil, uiuscraper.AllowDomainCE, uiuscraper.Notice_Site_CE},
+		{"Pharmacy Notices", uiuscraper.DepartmentPharmacy, uiuscraper.AllowDomainPharmacy, uiuscraper.Notice_Site_Pharmacy},
+	}
+
+	for _, tc := range cases {
+		var count int64
+		postgres.Model(&models.Notice{}).Where("department = ?", tc.department).Count(&count)
+		log.Info().Msgf("Total notices for %s: %d", tc.testName, count)
+
+		// 	config := setupConfig(tc.department, tc.allowDomain, tc.noticeSite)
+
+		// 	notices := uiuscraper.ScrapNotice(config)
+		// 	for _, notice := range notices {
+
+		// 		var n models.Notice
+		// 		res := postgres.Where("id = ?", notice.ID).First(&n)
+		// 		if res.Error != nil {
+		// 			log.Error().Err(res.Error).Msg("Error fetching the notice")
+		// 			log.Info().Msgf("---->> Notice: %s", notice)
+
+		// 			// create the notice
+		// 			noticeModel := models.Notice{
+		// 				ID:         notice.ID,
+		// 				Title:      notice.Title,
+		// 				Department: models.Department(notice.Department),
+		// 				Notified:   true,
+		// 				Summary:    notice.Summary,
+		// 				Image:      notice.Image,
+		// 				Date:       notice.Date,
+		// 				Link:       notice.Link,
+		// 			}
+
+		// 			res := postgres.Create(&noticeModel)
+		// 			if res.Error != nil {
+		// 				log.Error().Err(res.Error).Msg("Error creating the notice")
+		// 			}
+
+		// 		}
+
+		// 		if n.ID == notice.ID {
+		// 			n.Summary = notice.Summary
+		// 			res := postgres.Save(&n)
+		// 			if res.Error != nil {
+		// 				log.Error().Err(res.Error).Msg("Error updating the notice")
+		// 			}
+
+		// 			continue
+		// 		}
+
+		// 	}
+	}
 
 }
 
-func SeedData(postgres *gorm.DB) {
-	// get all the unique department names
-	var departments []string
-	postgres.Table("exams").Distinct("department").Pluck("department", &departments)
-
-	log.Info().Msgf("Unique departments: %v", departments)
-	log.Info().Msgf("Total departments: %v", len(departments))
-
-	// var courses []string
-	// postgres.Table("exams").Distinct("course_code").Pluck("course_code", &courses)
-
-	// log.Info().Msgf("Unique course codes: %v", courses)
-
-	// var exams []models.Exam
-
-	// var department = "Bba"
-	// courseCode := "4204 "
-	// section := "A"
-
-	// // res := postgres.Where("department = ? AND section = ?",
-	// // 	strings.ToLower(department),
-	// // 	strings.ToLower(section),
-	// // ).Where("course_code LIKE ?", "%"+courseCode+"%").Find(&exams)
-
-	// res := postgres.Where(models.Exam{
-	// 	Department: strings.ToLower(department),
-	// 	Section:    strings.ToLower(section),
-	// }).Where(
-	// 	"course_code LIKE ?", "%"+strings.ToLower(strings.TrimSpace(courseCode))+"%",
-	// ).Find(&exams)
-
-	// if res.Error != nil {
-	// 	log.Error().Err(res.Error).Msg("Error fetching exams")
-	// }
-
-	// log.Info().Msgf("Total exams: %v", len(exams))
-	// return
-
-	csvFils := []string{
-		"data/BSCSE-BSDS-BSEEE-BBA-BBA_in_AIS-&-BSECO-BSCE-BSSEDS-MSCSE-BA-in-English-MBA:EMBA.csv",
-	}
-
-	for _, csvFile := range csvFils {
-		jsonFilePath := strings.Replace(csvFile, ".csv", ".json", 1)
-
-		json, err := csvToJSON(csvFile, jsonFilePath)
-		if err != nil {
-			fmt.Println(err)
-		}
-
-		log.Info().Msgf("Data from %s converted to %s", csvFile, jsonFilePath)
-
-		startTime := time.Now()
-		for i, exam := range json {
-			var e models.Exam
-			result := postgres.Where("id = ?", exam.ID).First(&e)
-			if result.Error == nil {
-				log.Info().Msgf("%d. Exam already exists", i+1)
-				continue
-			}
-
-			postgres.Create(&exam)
-			log.Info().Msgf("%d. Data inserted", i+1)
-		}
-
-		log.Info().Msgf("Data inserted successfully! Time taken: %v", time.Since(startTime))
-	}
-
-	log.Info().Msg("Data inserted successfully!")
-}
+// func setupConfig(department uiuscraper.Department, allowDomain string, noticeSite string) *uiuscraper.NoticeScrapConfig {
+// 	config := uiuscraper.NoticeScrapConfig{
+// 		LastNoticeId: nil,
+// 		Department:   department,
+// 		AllowDomain:  allowDomain,
+// 		NOTICE_SITE:  noticeSite,
+// 	}
+// 	return &config
+// }

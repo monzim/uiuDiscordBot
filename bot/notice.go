@@ -154,11 +154,12 @@ func (b *Bot) SendNotices() {
 			}
 
 			mentionRoleID = "<@&" + mentionRoleID + ">"
+			description := utils.ConstructDescription(mentionRoleID, notice.Summary)
 
 			embed := &discordgo.MessageEmbed{
 				Title:       notice.Title,
 				URL:         notice.Link,
-				Description: mentionRoleID + " " + utils.SUPPORT_MESSAGE,
+				Description: description,
 				Image:       &discordgo.MessageEmbedImage{URL: notice.Image},
 				Color:       utils.GenColorCode(notice.Title),
 				Timestamp:   notice.Date.Format(time.RFC3339),
@@ -207,6 +208,7 @@ func (b *Bot) ScrapNoticesByDepartment(dep uiuscraper.Department, allowDomain st
 			Image:      notice.Image,
 			Date:       notice.Date,
 			Link:       notice.Link,
+			Summary:    notice.Summary,
 			Department: models.Department(notice.Department),
 		}
 

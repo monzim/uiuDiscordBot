@@ -10,7 +10,7 @@ on:
 env:
   SHORT_SHA: ${{ github.sha }}
   IMAGE_NAME: ${{ github.repository_owner }}/uiubot
-  IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref || contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}
+  IMAGE_TAG: ""
 
 jobs:
   build-and-push:
@@ -20,6 +20,16 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Set IMAGE_TAG
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            export IMAGE_TAG=$(echo "${GITHUB_REF#refs/tags/}")
+          elif [[ "${{ github.event.head_commit.message }}" == *"latest"* ]]; then
+            export IMAGE_TAG="latest"
+          else
+            export IMAGE_TAG="dev"
+          fi
 
       - name: Setup Go 1.22.x
         uses: actions/setup-go@v4

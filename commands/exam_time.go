@@ -101,7 +101,15 @@ var examTime = Commnad{
 							utils.Bold(department) + " with course code " + utils.Bold(courseCode) + " and section " + utils.Bold(section) +
 							". You may have entered course code incorrectly. Here is an example: `2213` or `cse 2213`. " +
 							"\n" + SUPPORT_STRING,
-					},
+
+						Embeds: []*discordgo.MessageEmbed{
+							// TODO: remove this embed when the final exam schedule is available
+							&discordgo.MessageEmbed{
+								Title:       "This time is for Midterm",
+								Description: "Midterm is over. Please check your final exam schedule. If you have any question, feel free to ask.",
+								Color:       utils.GenColorCode("Midterm"),
+							},
+						}},
 				})
 				return
 			}
@@ -120,6 +128,13 @@ var examTime = Commnad{
 						"Section **" + exam.Section + "**" + "     Faculty **" + exam.Teacher + "\n**\n**" + exam.ExamDate + " at " + exam.ExamTime + "**\n" + "Room " + exam.Room + "\n",
 				})
 			}
+
+			// TODO: remove this embed when the final exam schedule is available
+			embeds = append(embeds, &discordgo.MessageEmbed{
+				Title:       "This time is for Midterm",
+				Description: "Midterm is over. Please check your final exam schedule. If you have any question, feel free to ask.",
+				Color:       utils.GenColorCode("Midterm"),
+			})
 
 			embeds[len(embeds)-1].Footer = &discordgo.MessageEmbedFooter{
 				Text:    "Help Us Make a Difference",

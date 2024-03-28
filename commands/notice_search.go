@@ -119,11 +119,13 @@ var handlerNoticeSearch = Commnad{
 				title += "Dep. of " + string(notice.Department) + " - "
 			}
 
+			description := utils.ConstructDescription("", notice.Summary)
+
 			title += notice.Title
 			embed := &discordgo.MessageEmbed{
 				Title:       strings.Title(title),
 				URL:         notice.Link,
-				Description: utils.SUPPORT_MESSAGE,
+				Description: description,
 				Image:       &discordgo.MessageEmbedImage{URL: notice.Image},
 				Color:       utils.GenColorCode(notice.Title),
 				Timestamp:   notice.Date.Format(time.RFC3339),

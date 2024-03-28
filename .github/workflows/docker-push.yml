@@ -8,7 +8,7 @@ on:
     types: [published]
 
 env:
-  IMAGE_TAG: ${{ github.ref_type == 'tag' && github.event.release.tag_name|| contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}
+  IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref || contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}
 
 jobs:
   build-and-push:
@@ -33,6 +33,13 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+
+      - name: Replace "refs/tags/" in IMAGE_TAG
+        uses: bhaidar/string-replace-action@v0.2.0
+        with:
+          file: ${{ github.workflow_path }}
+          find: 'IMAGE_TAG: "refs/tags/"'
+          replace: 'IMAGE_TAG: ""'
 
       - name: Login to Amazon ECR
         id: login-ecr

@@ -13,7 +13,43 @@ env:
   IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref || contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}
 
 jobs:
-  push-to-ecr:
+  push-ghcr:
+    if: contains(github.event.head_commit.message, 'BUILD') || github.event_name == 'release'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Go 1.22.x
+        uses: actions/setup-go@v4
+        with:
+          go-version: "1.22.x"
+
+      - name: Install Go dependencies
+        run: go mod download
+
+      - name: 🔑 Login to GHCR
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GCR_TOKEN }}
+
+      - name: 🏗️ Build and push
+        run: |
+          if [[ $IMAGE_TAG == *"refs/tags/"* ]]; then
+            IMAGE_TAG=$(echo $IMAGE_TAG | sed 's/refs\/tags\///')
+            export IMAGE_TAG
+          fi
+          echo "==>> IMAGE_TAG: $IMAGE_TAG"
+
+          docker build -t ghcr.io/${{ env.IMAGE_NAME }}:$IMAGE_TAG -t ghcr.io/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }} .
+
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
+          docker push ghcr.io/${{ env.IMAGE_NAME }}:$IMAGE_TAG
+
+  push-ecr:
     if: contains(github.event.head_commit.message, 'BUILD') || github.event_name == 'release'
     runs-on: ubuntu-latest
     env:
@@ -58,39 +94,3 @@ jobs:
 
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-
-  build-push-ghcr:
-    if: contains(github.event.head_commit.message, 'BUILD') || github.event_name == 'release'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Go 1.22.x
-        uses: actions/setup-go@v4
-        with:
-          go-version: "1.22.x"
-
-      - name: Install Go dependencies
-        run: go mod download
-
-      - name: 🔑 Login to GHCR
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GCR_TOKEN }}
-
-      - name: 🏗️ Build and push
-        run: |
-          if [[ $IMAGE_TAG == *"refs/tags/"* ]]; then
-            IMAGE_TAG=$(echo $IMAGE_TAG | sed 's/refs\/tags\///')
-            export IMAGE_TAG
-          fi
-          echo "==>> IMAGE_TAG: $IMAGE_TAG"
-
-          docker build -t ghcr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }} -t ghcr.io/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }} .
-
-          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
-          docker push ghcr.io/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}

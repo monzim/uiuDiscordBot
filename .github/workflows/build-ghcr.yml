@@ -34,6 +34,8 @@ jobs:
           if [[ $IMAGE_TAG == *"refs/tags/"* ]]; then
             IMAGE_TAG=$(echo $IMAGE_TAG | sed 's/refs\/tags\///')
           fi
+          # print the IMAGE_TAG
+          echo ">> IMAGE_TAG: $IMAGE_TAG"
         env:
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
 

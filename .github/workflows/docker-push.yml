@@ -35,11 +35,13 @@ jobs:
           aws-region: us-east-1
 
       - name: Replace "refs/tags/" in IMAGE_TAG
-        uses: bhaidar/string-replace-action@v0.2.0
+        uses: mad9000/actions-find-and-replace-string@5
         with:
-          file: ${{ github.workflow_path }}
-          find: 'IMAGE_TAG: "refs/tags/"'
-          replace: 'IMAGE_TAG: ""'
+          source: ${{ github.ref }}
+          find: "ref/heads/"
+          replace: ""
+        env:
+          IMAGE_TAG: ${{ steps.findandreplace.outputs.value}}
 
       - name: Login to Amazon ECR
         id: login-ecr

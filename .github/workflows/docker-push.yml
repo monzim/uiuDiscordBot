@@ -7,13 +7,12 @@ on:
   release:
     types: [published]
 
-env:
-  IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref || contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}
-
 jobs:
   build-and-push:
     if: contains(github.event.head_commit.message, 'BUILD') || github.event_name == 'release'
     runs-on: ubuntu-latest
+    env:
+      IMAGE_TAG: ${{ github.ref_type == 'tag' && github.ref || contains(github.event.head_commit.message, 'latest')  && 'latest' || 'dev'  }}
 
     steps:
       - name: Checkout code
@@ -34,18 +33,17 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Replace "refs/tags/" in IMAGE_TAG
-        uses: mad9000/actions-find-and-replace-string@5
-        with:
-          source: ${{ github.ref }}
-          find: "ref/heads/"
-          replace: ""
-        env:
-          IMAGE_TAG: ${{ steps.findandreplace.outputs.value}}
-
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Modify IMAGE_TAG if contains "refs/tags/"
+        run: |
+          if [[ $IMAGE_TAG == *"refs/tags/"* ]]; then
+            IMAGE_TAG=$(echo $IMAGE_TAG | sed 's/refs\/tags\///')
+            export IMAGE_TAG
+          fi
+          echo ">> IMAGE_TAG: $IMAGE_TAG"
 
       - name: Build, Tag, and Push the Image to Amazon ECR
         id: build-image

@@ -40,28 +40,13 @@ func main() {
 	log.Info().Msg("Starting the bot...")
 	flag.Parse()
 
-	postgres, err := db.NewDatabaseConnection(&db.DatabaseConfig{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		DBname:   os.Getenv("DB_NAME"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		SSlMode:  os.Getenv("DB_SSL_MODE"),
-	})
+	postgres, err := db.NewDatabaseConnection(os.Getenv("DATABASE_URI"))
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the database connection")
 
 	}
 
-	logPg, err := db.NewDatabaseConnection(&db.DatabaseConfig{
-		Host:     os.Getenv("LOG_DB_HOST"),
-		Port:     os.Getenv("LOG_DB_PORT"),
-		DBname:   os.Getenv("LOG_DB_NAME"),
-		User:     os.Getenv("LOG_DB_USER"),
-		Password: os.Getenv("LOG_DB_PASSWORD"),
-		SSlMode:  os.Getenv("LOG_DB_SSL_MODE"),
-	})
-
+	logPg, err := db.NewDatabaseConnection(os.Getenv("LOG_DATABASE_URI"))
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the database connection 2")
 	}
@@ -114,7 +99,8 @@ func main() {
 
 	go myBot.PingServerStatus()
 	go myBot.SendNotices()
-	go myBot.SendServerStatsToChannel()
+	go myBot.CronSchedule()
+	// go myBot.SendServerStatsToChannel()
 
 	// list all commands
 	myBot.ListCommands(*GuildID)

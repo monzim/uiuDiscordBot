@@ -95,6 +95,7 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 		helpHandler.Command,
 		handlerUserConfigure.Command,
 		handlerRamadanCalender.Command,
+		handleSendMessage.Command,
 	}
 }
 
@@ -129,6 +130,7 @@ var (
 		helpHandler.Trigger:            helpHandler.Handler,
 		handlerUserConfigure.Trigger:   handlerUserConfigure.Handler,
 		handlerRamadanCalender.Trigger: handlerRamadanCalender.Handler,
+		handleSendMessage.Trigger:      handleSendMessage.Handler,
 	}
 )
 

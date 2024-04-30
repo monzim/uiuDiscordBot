@@ -1,7 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"os"
+	"time"
 
 	"github.com/joho/godotenv"
 	uiuscraper "github.com/monzim/uiu-notice-scraper"
@@ -11,83 +13,67 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-// func trimRoomSpaces(s string) string {
-// 	return strings.ReplaceAll(s, "  ", "")
-// }
+func getSemester(date time.Time) string {
+	year := date.Year()
+	springStart := time.Date(year, time.January, 1, 0, 0, 0, 0, time.UTC)
+	springMid := time.Date(year, time.March, 15, 12, 0, 0, 0, time.UTC)
+	springEnd := time.Date(year, time.May, 31, 23, 59, 59, 999999999, time.UTC)
+	summerStart := time.Date(year, time.June, 1, 0, 0, 0, 0, time.UTC)
+	summerMid := time.Date(year, time.August, 15, 12, 0, 0, 0, time.UTC)
+	summerEnd := time.Date(year, time.September, 30, 23, 59, 59, 999999999, time.UTC)
+	fallStart := time.Date(year, time.October, 1, 0, 0, 0, 0, time.UTC)
+	fallMid := time.Date(year, time.November, 15, 12, 0, 0, 0, time.UTC)
+	fallEnd := time.Date(year, time.December, 31, 23, 59, 59, 999999999, time.UTC)
 
-// func generateID(courseCode, section, room string) string {
-// 	hashInput := fmt.Sprintf("%s-%s-%s", courseCode, section, room)
-// 	hash := sha256.Sum256([]byte(hashInput))
-// 	return fmt.Sprintf("%x", hash)
-// }
+	if date.After(springStart) && date.Before(springMid) {
+		return fmt.Sprintf("%d_SPRING_MID", year)
+	} else if date.After(springMid) && date.Before(springEnd) {
+		return fmt.Sprintf("%d_SPRING_FINAL", year)
+	} else if date.After(summerStart) && date.Before(summerMid) {
+		return fmt.Sprintf("%d_SUMMER_MID", year)
+	} else if date.After(summerMid) && date.Before(summerEnd) {
+		return fmt.Sprintf("%d_SUMMER_FINAL", year)
+	} else if date.After(fallStart) && date.Before(fallMid) {
+		return fmt.Sprintf("%d_FALL_MID", year)
+	} else if date.After(fallMid) && date.Before(fallEnd) {
+		return fmt.Sprintf("%d_FALL_FINAL", year)
+	} else {
+		return "Invalid Date"
+	}
+}
 
-// func csvToJSON(csvFilePath, jsonFilePath string) ([]models.Exam, error) {
-// 	csvFile, err := os.Open(csvFilePath)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer csvFile.Close()
+func testAllMonths(year int) {
+	// Iterate over all months
+	for month := time.January; month <= time.December; month++ {
+		// Get the first day of the month
+		firstDayOfMonth := time.Date(year, month, 1, 0, 0, 0, 0, time.UTC)
+		// Test the first day of the month
+		semester := getSemester(firstDayOfMonth)
+		fmt.Printf("%s: %s\n", firstDayOfMonth.Format("2006-01-02"), semester)
 
-// 	csvReader := csv.NewReader(csvFile)
-// 	csvData, err := csvReader.ReadAll()
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	var exams []models.Exam
-
-// 	for _, row := range csvData[1:] {
-// 		exam := models.Exam{
-// 			ID:          generateID(row[1], row[3], trimRoomSpaces(row[7])),
-// 			Department:  strings.ToLower(strings.TrimSpace(row[0])),
-// 			CourseCode:  strings.ToLower(strings.TrimSpace(row[1])),
-// 			CourseTitle: strings.ToLower(strings.TrimSpace(row[2])),
-// 			Section:     strings.ToLower(strings.TrimSpace(row[3])),
-// 			Teacher:     row[4],
-// 			ExamDate:    row[5],
-// 			ExamTime:    row[6],
-// 			Room:        trimRoomSpaces(row[7]),
-// 		}
-// 		exams = append(exams, exam)
-// 	}
-
-// 	jsonFile, err := os.Create(jsonFilePath)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	defer jsonFile.Close()
-
-// 	jsonEncoder := json.NewEncoder(jsonFile)
-// 	jsonEncoder.SetIndent("", "    ") // Optional: Set indentation for better readability
-// 	if err := jsonEncoder.Encode(exams); err != nil {
-// 		return nil, err
-// 	}
-
-// 	fmt.Println("Conversion successful!")
-// 	return exams, nil
-// }
+		// Get a mid-day of the month for additional testing
+		midDayOfMonth := time.Date(year, month, 15, 12, 0, 0, 0, time.UTC)
+		// Test the mid-day of the month
+		semester = getSemester(midDayOfMonth)
+		fmt.Printf("%s: %s\n", midDayOfMonth.Format("2006-01-02"), semester)
+	}
+}
 
 func main() {
+	testAllMonths(2024)
+}
+
+func Oldmain() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	err := godotenv.Load()
 	if err != nil {
 		log.Error().Err(err).Msg("Error loading .env file")
 	}
 
-	postgres, err := db.NewDatabaseConnection(&db.DatabaseConfig{
-		Host:     os.Getenv("DB_HOST"),
-		Port:     os.Getenv("DB_PORT"),
-		DBname:   os.Getenv("DB_NAME"),
-		User:     os.Getenv("DB_USER"),
-		Password: os.Getenv("DB_PASSWORD"),
-		SSlMode:  os.Getenv("DB_SSL_MODE"),
-		// Host:     os.Getenv("LOG_DB_HOST"),
-		// Port:     os.Getenv("LOG_DB_PORT"),
-		// DBname:   os.Getenv("LOG_DB_NAME"),
-		// User:     os.Getenv("LOG_DB_USER"),
-		// Password: os.Getenv("LOG_DB_PASSWORD"),
-		// SSlMode:  os.Getenv("LOG_DB_SSL_MODE"),
-	})
+	postgres, err := db.NewDatabaseConnection(
+		// os.Getenv("LOG_DATABASE_URI"),
+		os.Getenv("DATABASE_URI"),
+	)
 	if err != nil {
 		log.Error().Err(err).Msg("Error initializing the database connection")
 

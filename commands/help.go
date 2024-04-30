@@ -23,7 +23,7 @@ var allCommands = []lol{
 	{Name: academyCalenderHandler.Trigger, Description: academyCalenderHandler.Command.Description},
 	{Name: handlerNoticeSearch.Trigger, Description: handlerNoticeSearch.Command.Description},
 	{Name: handlerUserConfigure.Trigger, Description: handlerUserConfigure.Command.Description},
-	{Name: handlerRamadanCalender.Trigger, Description: handlerRamadanCalender.Command.Description},
+	// {Name: handlerRamadanCalender.Trigger, Description: handlerRamadanCalender.Command.Description},
 }
 
 var helpHandler = Commnad{

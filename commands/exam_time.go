@@ -16,6 +16,8 @@ var (
 	SUPPORT_STRING = utils.SUPPORT_MESSAGE
 )
 
+const currentSemester = models.SPRING_24_FIN
+
 var examTime = Commnad{
 	Trigger: "exam-time",
 	Command: &discordgo.ApplicationCommand{
@@ -77,6 +79,7 @@ var examTime = Commnad{
 		res := op.db.Where(models.Exam{
 			Department: strings.ToLower(department),
 			Section:    strings.ToLower(section),
+			TrimsterID: currentSemester,
 		}).Where("course_code LIKE ?", "%"+strings.ToLower(strings.TrimSpace(courseCode))+"%").Find(&exams)
 
 		if res.Error != nil {
@@ -102,14 +105,15 @@ var examTime = Commnad{
 							". You may have entered course code incorrectly. Here is an example: `2213` or `cse 2213`. " +
 							"\n" + SUPPORT_STRING,
 
-						Embeds: []*discordgo.MessageEmbed{
-							// TODO: remove this embed when the final exam schedule is available
-							&discordgo.MessageEmbed{
-								Title:       "This time is for Midterm",
-								Description: "Midterm is over. Please check your final exam schedule. If you have any question, feel free to ask.",
-								Color:       utils.GenColorCode("Midterm"),
-							},
-						}},
+						// Embeds: []*discordgo.MessageEmbed{
+						// 	// TODO: remove this embed when the final exam schedule is available
+						// 	&discordgo.MessageEmbed{
+						// 		Title:       "This time is for Midterm",
+						// 		Description: "Midterm is over. Please check your final exam schedule. If you have any question, feel free to ask.",
+						// 		Color:       utils.GenColorCode("Midterm"),
+						// 	},
+						// },
+					},
 				})
 				return
 			}
@@ -129,12 +133,12 @@ var examTime = Commnad{
 				})
 			}
 
-			// TODO: remove this embed when the final exam schedule is available
-			embeds = append(embeds, &discordgo.MessageEmbed{
-				Title:       "This time is for Midterm",
-				Description: "Midterm is over. Please check your final exam schedule. If you have any question, feel free to ask.",
-				Color:       utils.GenColorCode("Midterm"),
-			})
+			// // TODO: remove this embed when the final exam schedule is available
+			// embeds = append(embeds, &discordgo.MessageEmbed{
+			// 	Title:       "This time is for Midterm",
+			// 	Description: "Midterm is over. Please check your final exam schedule. If you have any question, feel free to ask.",
+			// 	Color:       utils.GenColorCode("Midterm"),
+			// })
 
 			embeds[len(embeds)-1].Footer = &discordgo.MessageEmbedFooter{
 				Text:    "Help Us Make a Difference",

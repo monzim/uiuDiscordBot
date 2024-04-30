@@ -21,6 +21,7 @@ func Migrate(db *gorm.DB) error {
 		&models.MessageLog{},
 		&models.DMLog{},
 		&models.Notice{},
+		&models.CronMessage{},
 	)
 
 	if err != nil {

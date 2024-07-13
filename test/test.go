@@ -59,11 +59,6 @@ func TestAllMonths(year int) {
 	}
 }
 
-func main() {
-	// testAllMonths(2024)
-	Oldmain()
-}
-
 func Oldmain() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	err := godotenv.Load()

@@ -1,5 +1,10 @@
 # 🤖 UIU Discord Bot 🎓
 
+<!-- last update -->
+
+`Last Updated: 2024-07-13`
+Summer 24 Mid Term Exam Routine has been published. Please check the exam time using the `/exam-time` command.
+
 Welcome to the UIU Discord Bot, a bot designed to help you get all the information you need about the United International University (UIU). This bot is designed to provide you with all the information you need about the university, including the academic calendar, exam time, upcoming holidays, and more.
 
 ## 🚀 Getting Started

@@ -42,7 +42,7 @@ func getSemester(date time.Time) string {
 	}
 }
 
-func testAllMonths(year int) {
+func TestAllMonths(year int) {
 	// Iterate over all months
 	for month := time.January; month <= time.December; month++ {
 		// Get the first day of the month
@@ -60,7 +60,8 @@ func testAllMonths(year int) {
 }
 
 func main() {
-	testAllMonths(2024)
+	// testAllMonths(2024)
+	Oldmain()
 }
 
 func Oldmain() {
@@ -119,57 +120,57 @@ func Oldmain() {
 		postgres.Model(&models.Notice{}).Where("department = ?", tc.department).Count(&count)
 		log.Info().Msgf("Total notices for %s: %d", tc.testName, count)
 
-		// 	config := setupConfig(tc.department, tc.allowDomain, tc.noticeSite)
+		config := setupConfig(tc.department, tc.allowDomain, tc.noticeSite)
 
-		// 	notices := uiuscraper.ScrapNotice(config)
-		// 	for _, notice := range notices {
+		notices := uiuscraper.ScrapNotice(config)
+		for _, notice := range notices {
 
-		// 		var n models.Notice
-		// 		res := postgres.Where("id = ?", notice.ID).First(&n)
-		// 		if res.Error != nil {
-		// 			log.Error().Err(res.Error).Msg("Error fetching the notice")
-		// 			log.Info().Msgf("---->> Notice: %s", notice)
+			var n models.Notice
+			res := postgres.Where("id = ?", notice.ID).First(&n)
+			if res.Error != nil {
+				log.Error().Err(res.Error).Msg("Error fetching the notice")
+				log.Info().Msgf("---->> Notice: %s", notice)
 
-		// 			// create the notice
-		// 			noticeModel := models.Notice{
-		// 				ID:         notice.ID,
-		// 				Title:      notice.Title,
-		// 				Department: models.Department(notice.Department),
-		// 				Notified:   true,
-		// 				Summary:    notice.Summary,
-		// 				Image:      notice.Image,
-		// 				Date:       notice.Date,
-		// 				Link:       notice.Link,
-		// 			}
+				// create the notice
+				noticeModel := models.Notice{
+					ID:         notice.ID,
+					Title:      notice.Title,
+					Department: models.Department(notice.Department),
+					Notified:   true,
+					Summary:    notice.Summary,
+					Image:      notice.Image,
+					Date:       notice.Date,
+					Link:       notice.Link,
+				}
 
-		// 			res := postgres.Create(&noticeModel)
-		// 			if res.Error != nil {
-		// 				log.Error().Err(res.Error).Msg("Error creating the notice")
-		// 			}
+				res := postgres.Create(&noticeModel)
+				if res.Error != nil {
+					log.Error().Err(res.Error).Msg("Error creating the notice")
+				}
 
-		// 		}
+			}
 
-		// 		if n.ID == notice.ID {
-		// 			n.Summary = notice.Summary
-		// 			res := postgres.Save(&n)
-		// 			if res.Error != nil {
-		// 				log.Error().Err(res.Error).Msg("Error updating the notice")
-		// 			}
+			if n.ID == notice.ID {
+				n.Summary = notice.Summary
+				res := postgres.Save(&n)
+				if res.Error != nil {
+					log.Error().Err(res.Error).Msg("Error updating the notice")
+				}
 
-		// 			continue
-		// 		}
+				continue
+			}
 
-		// 	}
+		}
 	}
 
 }
 
-// func setupConfig(department uiuscraper.Department, allowDomain string, noticeSite string) *uiuscraper.NoticeScrapConfig {
-// 	config := uiuscraper.NoticeScrapConfig{
-// 		LastNoticeId: nil,
-// 		Department:   department,
-// 		AllowDomain:  allowDomain,
-// 		NOTICE_SITE:  noticeSite,
-// 	}
-// 	return &config
-// }
+func setupConfig(department uiuscraper.Department, allowDomain string, noticeSite string) *uiuscraper.NoticeScrapConfig {
+	config := uiuscraper.NoticeScrapConfig{
+		LastNoticeId: nil,
+		Department:   department,
+		AllowDomain:  allowDomain,
+		NOTICE_SITE:  noticeSite,
+	}
+	return &config
+}

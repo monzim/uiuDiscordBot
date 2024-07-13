@@ -21,3 +21,4 @@ tmp
 
 .env
 docs/docker-compose.yml
+uiudiscordbot.docker-compose.yml

@@ -31,7 +31,7 @@ func init() {
 		log.Error().Err(err).Msg("Error loading .env file")
 	}
 
-	*BotToken = os.Getenv("TOKEN")
+	*BotToken = os.Getenv("DISCORD_TOKEN")
 }
 
 func main() {

@@ -15,7 +15,7 @@ var handlerAuthor = Commnad{
 		op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: "This bot was created by <@669529872644833290>\nhttps://monzim.com/about\n" + SUPPORT_STRING,
+				Content: "This bot was created by <@669529872644833290>\nhttps://monzim.com\n" + SUPPORT_STRING,
 			},
 		})
 	},

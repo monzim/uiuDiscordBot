@@ -17,7 +17,8 @@ import (
 )
 
 const (
-	SUMMER_24_MID = "24_SUMMER_MID"
+	// SUMMER_24_MID = "24_SUMMER_MID"
+	FINAL_SUMMER_24 = "24_SUMMER_FINAL"
 )
 
 func AddExamsToDatabase() {
@@ -42,7 +43,7 @@ func AddExamsToDatabase() {
 	}
 
 	// convert the exam time csv to json
-	exams, err := CsvToJSON(SUMMER_24_MID, "24_SUMMER_MID.csv", "24_SUMMER_MID.json")
+	exams, err := CsvToJSON(FINAL_SUMMER_24, fmt.Sprintf("%s.csv", FINAL_SUMMER_24), fmt.Sprintf("%s.json", FINAL_SUMMER_24))
 	if err != nil {
 		log.Error().Err(err).Msg("Error converting the csv to json")
 	}

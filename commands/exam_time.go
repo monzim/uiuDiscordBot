@@ -16,7 +16,7 @@ var (
 	SUPPORT_STRING = utils.SUPPORT_MESSAGE
 )
 
-const currentSemester = models.SUMMER_24_MID
+const currentSemester = models.FINAL_SUMMER_24
 
 var examTime = Commnad{
 	Trigger: "exam-time",

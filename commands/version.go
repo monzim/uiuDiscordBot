@@ -6,7 +6,7 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var VERSION = "2.0.3"
+var VERSION = "2.0.5"
 var BUILD = time.Date(2024, time.October, 19, 11, 00, 00, 00, time.UTC)
 
 var handlerVersion = Commnad{

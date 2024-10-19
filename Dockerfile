@@ -12,7 +12,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM alpine:3.19.1
 
-LABEL name="UIU Discord Bot" version="2.0.3"
+LABEL name="UIU Discord Bot" version="2.0.5"
 LABEL author="Azraf Al Monzim"
 LABEL maintainer="Azraf Al Monzim"
 

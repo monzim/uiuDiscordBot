@@ -63,6 +63,10 @@ var upcomingExam = Commnad{
 	},
 
 	Handler: func(op *options) {
+		if true {
+			in_maintainance(op)
+			return
+		}
 
 		var embeds []*discordgo.MessageEmbed
 		for _, e := range upcomingExams {

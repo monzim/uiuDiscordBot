@@ -18,6 +18,7 @@ docs/start.sh
 go.work
 
 tmp
+*.DS_Store
 
 .env
 docs/docker-compose.yml

@@ -17,6 +17,11 @@ var academyCalenderHandler = Commnad{
 	},
 
 	Handler: func(op *options) {
+		if true {
+			in_maintainance(op)
+			return
+		}
+
 		pf, err := os.Open(CALENDER_PATH)
 		if err != nil {
 			op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{

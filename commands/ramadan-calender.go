@@ -15,6 +15,11 @@ var handlerRamadanCalender = Commnad{
 	},
 
 	Handler: func(op *options) {
+		if true {
+			in_maintainance(op)
+			return
+		}
+
 		op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{

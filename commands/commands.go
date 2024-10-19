@@ -118,14 +118,14 @@ func updateUserActivity(db *gorm.DB, userID string) {
 
 var (
 	commandHandlers = map[string]func(op *options){
-		ping.Trigger:                   ping.Handler,
-		examTime.Trigger:               examTime.Handler,
-		upcomingExam.Trigger:           upcomingExam.Handler,
-		installmentHandler.Trigger:     installmentHandler.Handler,
-		holidayHandler.Trigger:         holidayHandler.Handler,
-		handlerAuthor.Trigger:          handlerAuthor.Handler,
-		handlerVersion.Trigger:         handlerVersion.Handler,
-		academyCalenderHandler.Trigger: academyCalenderHandler.Handler,
+		ping.Trigger:               ping.Handler,
+		examTime.Trigger:           examTime.Handler,
+		upcomingExam.Trigger:       upcomingExam.Handler,
+		installmentHandler.Trigger: installmentHandler.Handler,
+		holidayHandler.Trigger:     holidayHandler.Handler,
+		handlerAuthor.Trigger:      handlerAuthor.Handler,
+		handlerVersion.Trigger:     handlerVersion.Handler,
+		// academyCalenderHandler.Trigger: academyCalenderHandler.Handler,
 		handlerNoticeSearch.Trigger:    handlerNoticeSearch.Handler,
 		helpHandler.Trigger:            helpHandler.Handler,
 		handlerUserConfigure.Trigger:   handlerUserConfigure.Handler,

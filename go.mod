@@ -5,7 +5,7 @@ go 1.22.0
 require (
 	github.com/bwmarrin/discordgo v0.27.1
 	github.com/joho/godotenv v1.5.1
-	github.com/monzim/uiu-notice-scraper v0.0.0-20240328114953-2266829651b7
+	github.com/monzim/uiu-notice-scraper v0.0.0-20241019164838-9aa763a64dfb
 	github.com/rs/zerolog v1.32.0
 	gorm.io/driver/postgres v1.5.6
 	gorm.io/gorm v1.25.7

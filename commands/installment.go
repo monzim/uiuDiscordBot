@@ -45,6 +45,11 @@ var installmentHandler = Commnad{
 	},
 
 	Handler: func(op *options) {
+		if true {
+			in_maintainance(op)
+			return
+		}
+
 		now := time.Now()
 		var nextPayment Installment
 

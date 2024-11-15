@@ -13,6 +13,11 @@ import (
 )
 
 func (b *Bot) SendNotices() {
+	if os.Getenv("NOTICE_SEND") != "true" {
+		log.Info().Msg("Notice send is disabled")
+		return
+	}
+
 	var mutex sync.Mutex
 
 	interval, err := time.ParseDuration(os.Getenv("NOTICE_CHECK_INTERVAL_DURATION"))
@@ -214,6 +219,23 @@ func (b *Bot) ScrapNoticesByDepartment(dep uiuscraper.Department, allowDomain st
 
 		if err := b.DB.FirstOrCreate(&n).Error; err != nil {
 			log.Error().Err(err).Msg("Error creating the notice")
+		}
+
+		// send it to Unizim app server
+		err := NoticePushToUnizim(&NoticePayload{
+			DocumentID: "unique()",
+			Data: NoticeBoyd{
+				HashID:     n.ID,
+				Title:      n.Title,
+				Summary:    n.Summary,
+				Image:      n.Image,
+				Date:       n.Date.Format(time.RFC3339),
+				Department: string(n.Department),
+			},
+		})
+
+		if err != nil {
+			log.Error().Err(err).Msg("Error sending the notice to Unizim app server")
 		}
 
 		if err := b.LogDb.FirstOrCreate(&n).Error; err != nil {

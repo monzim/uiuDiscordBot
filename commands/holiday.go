@@ -8,54 +8,29 @@ import (
 )
 
 var holidays = []Holiday{
-
 	{
-		Start:    time.Date(2024, time.February, 21, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.February, 21, 0, 0, 0, 0, time.UTC),
+		Start:    time.Date(2024, time.December, 16, 0, 0, 0, 0, time.UTC),
+		End:      time.Date(2024, time.December, 16, 0, 0, 0, 0, time.UTC),
 		IsOneDay: true,
-		Message:  "Holiday: International Mother Language Day",
+		Message:  "Holiday: Victory Day",
 	},
 	{
-		Start:    time.Date(2024, time.February, 26, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.February, 26, 0, 0, 0, 0, time.UTC),
+		Start:    time.Date(2024, time.December, 25, 0, 0, 0, 0, time.UTC),
+		End:      time.Date(2024, time.December, 25, 0, 0, 0, 0, time.UTC),
+		IsOneDay: true,
+		Message:  "Holiday: Christmas Day",
+	},
+	{
+		Start:    time.Date(2025, time.February, 2, 0, 0, 0, 0, time.UTC),
+		End:      time.Date(2025, time.February, 2, 0, 0, 0, 0, time.UTC),
+		IsOneDay: true,
+		Message:  "Holiday: Sharaswati Puja (Only classes will remain suspended)",
+	},
+	{
+		Start:    time.Date(2025, time.February, 14, 0, 0, 0, 0, time.UTC),
+		End:      time.Date(2025, time.February, 14, 0, 0, 0, 0, time.UTC),
 		IsOneDay: true,
 		Message:  "Holiday: *Shab-e-Barat",
-	},
-	{
-		Start:    time.Date(2024, time.March, 17, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.March, 17, 0, 0, 0, 0, time.UTC),
-		IsOneDay: true,
-		Message:  "Holiday: Birthday of Father of the Nation Bangabandhu Sheikh Mujibur Rahman",
-	},
-	{
-		Start:    time.Date(2024, time.March, 26, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.March, 26, 0, 0, 0, 0, time.UTC),
-		IsOneDay: true,
-		Message:  "Holiday: Independence Day",
-	},
-	{
-		Start:    time.Date(2024, time.April, 4, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.April, 14, 0, 0, 0, 0, time.UTC),
-		IsOneDay: false,
-		Message:  "Holiday:  Jumu’atul-Widaa/ *Shab-e-Qad’r /*Eid-ul-Fit’r/ Bangla New Year (for administration  only)",
-	},
-	{
-		Start:    time.Date(2024, time.April, 4, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.April, 15, 0, 0, 0, 0, time.UTC),
-		IsOneDay: false,
-		Message:  "Holiday:  Jumu’atul-Widaa/ *Shab-e-Qad’r /*Eid-ul-Fit’r/ Bangla New Year (for students only)",
-	},
-	{
-		Start:    time.Date(2024, time.May, 1, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.May, 1, 0, 0, 0, 0, time.UTC),
-		IsOneDay: true,
-		Message:  "Holiday: May Day",
-	},
-	{
-		Start:    time.Date(2024, time.May, 22, 0, 0, 0, 0, time.UTC),
-		End:      time.Date(2024, time.May, 22, 0, 0, 0, 0, time.UTC),
-		IsOneDay: true,
-		Message:  "Holiday: *Buddha Purnima",
 	},
 }
 
@@ -74,10 +49,10 @@ var holidayHandler = Commnad{
 	},
 
 	Handler: func(op *options) {
-		if true {
-			in_maintainance(op)
-			return
-		}
+		// if true {
+		// 	in_maintainance(op)
+		// 	return
+		// }
 
 		now := time.Now()
 		var nextHoliday Holiday

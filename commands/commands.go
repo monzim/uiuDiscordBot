@@ -90,7 +90,7 @@ func GetCommands(db *gorm.DB) []*discordgo.ApplicationCommand {
 		holidayHandler.Command,
 		handlerAuthor.Command,
 		handlerVersion.Command,
-		academyCalenderHandler.Command,
+		academycalendarHandler.Command,
 		handlerNoticeSearch.Command,
 		helpHandler.Command,
 		handlerUserConfigure.Command,

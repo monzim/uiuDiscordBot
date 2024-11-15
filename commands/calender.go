@@ -6,23 +6,18 @@ import (
 	"github.com/bwmarrin/discordgo"
 )
 
-var TRIMSTER_NAME = "Spring_2024"
-var CALENDER_PATH = "public/Cal-Spring-2024.pdf"
+var TRIMSTER_NAME = "Fall_2024"
+var calendar_PATH = "public/Cal-Fall-2024.pdf"
 
-var academyCalenderHandler = Commnad{
-	Trigger: "academy-calender",
+var academycalendarHandler = Commnad{
+	Trigger: "academy-calendar",
 	Command: &discordgo.ApplicationCommand{
-		Name:        "academy-calender",
-		Description: "Replies with current academy calender",
+		Name:        "academy-calendar",
+		Description: "Replies with current academic calendar",
 	},
 
 	Handler: func(op *options) {
-		if true {
-			in_maintainance(op)
-			return
-		}
-
-		pf, err := os.Open(CALENDER_PATH)
+		pf, err := os.Open(calendar_PATH)
 		if err != nil {
 			op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 				Type: discordgo.InteractionResponseChannelMessageWithSource,
@@ -35,7 +30,7 @@ var academyCalenderHandler = Commnad{
 		op.ses.InteractionRespond(op.in.Interaction, &discordgo.InteractionResponse{
 			Type: discordgo.InteractionResponseChannelMessageWithSource,
 			Data: &discordgo.InteractionResponseData{
-				Content: "Here is the current academy calender pdf\n" + SUPPORT_STRING,
+				Content: "Here is the current academic calendar for " + TRIMSTER_NAME + ":\n" + SUPPORT_STRING,
 				Files: []*discordgo.File{
 					{
 						ContentType: "application/pdf",

@@ -12,12 +12,13 @@ RUN CGO_ENABLED=0 GOOS=linux go build -o main .
 
 FROM alpine:3.19.1
 
-LABEL name="UIU Discord Bot" version="2.0.5"
+LABEL name="UIU Discord Bot" version="2.0.6"
 LABEL author="Azraf Al Monzim"
 LABEL maintainer="Azraf Al Monzim"
 
 WORKDIR /app
 
+COPY --from=builder /go/src/app/public public
 COPY --from=builder /go/src/app/main .
 
 RUN echo "PORT=8080" >.env

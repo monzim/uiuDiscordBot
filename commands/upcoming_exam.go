@@ -40,16 +40,14 @@ func formatDateTime(inputTime time.Time) string {
 
 var upcomingExams = []NextExam{
 	{
-
-		StartDate: time.Date(2024, time.March, 9, 0, 0, 0, 0, time.UTC),
-		EndDate:   time.Date(2024, time.March, 16, 0, 0, 0, 0, time.UTC),
+		StartDate: time.Date(2024, time.December, 14, 0, 0, 0, 0, time.UTC),
+		EndDate:   time.Date(2024, time.December, 22, 0, 0, 0, 0, time.UTC),
 		Type:      "Mid-Term Exam",
 		Color:     0x00ff00,
 	},
 	{
-
-		StartDate: time.Date(2024, time.May, 12, 0, 0, 0, 0, time.UTC),
-		EndDate:   time.Date(2024, time.May, 20, 0, 0, 0, 0, time.UTC),
+		StartDate: time.Date(2025, time.February, 3, 0, 0, 0, 0, time.UTC),
+		EndDate:   time.Date(2025, time.February, 11, 0, 0, 0, 0, time.UTC),
 		Type:      "Final Exam",
 		Color:     0xff0000,
 	},
@@ -63,10 +61,10 @@ var upcomingExam = Commnad{
 	},
 
 	Handler: func(op *options) {
-		if true {
-			in_maintainance(op)
-			return
-		}
+		// if true {
+		// 	in_maintainance(op)
+		// 	return
+		// }
 
 		var embeds []*discordgo.MessageEmbed
 		for _, e := range upcomingExams {

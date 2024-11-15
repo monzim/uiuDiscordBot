@@ -20,7 +20,7 @@ var allCommands = []lol{
 	{Name: holidayHandler.Trigger, Description: holidayHandler.Command.Description},
 	{Name: handlerAuthor.Trigger, Description: handlerAuthor.Command.Description},
 	{Name: handlerVersion.Trigger, Description: handlerVersion.Command.Description},
-	{Name: academyCalenderHandler.Trigger, Description: academyCalenderHandler.Command.Description},
+	{Name: academycalendarHandler.Trigger, Description: academycalendarHandler.Command.Description},
 	{Name: handlerNoticeSearch.Trigger, Description: handlerNoticeSearch.Command.Description},
 	{Name: handlerUserConfigure.Trigger, Description: handlerUserConfigure.Command.Description},
 	// {Name: handlerRamadanCalender.Trigger, Description: handlerRamadanCalender.Command.Description},

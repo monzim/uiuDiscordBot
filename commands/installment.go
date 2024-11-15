@@ -17,22 +17,22 @@ type Installment struct {
 var installments = []Installment{
 	{
 		Index:   0,
-		Message: "1st installment: A fine of Tk. 1,000/- will be imposed if 40% Tuition Fee and Trimester Fee is not paid within this date. Transportation fee, if applicable, must be paid in full (no installment)",
-		Date:    time.Date(2024, time.February, 13, 0, 0, 0, 0, time.UTC),
+		Message: "1st installment: A fine of Tk. 500/- will be imposed if 40% Tuition Fee and Trimester Fee is not paid within this date. Transportation fee, if applicable, must be paid in full (no installment)",
+		Date:    time.Date(2024, time.November, 20, 0, 0, 0, 0, time.UTC),
 		Color:   0xA5DD9B,
 	},
 
 	{
 		Index:   1,
-		Message: "2nd installment: A fine of Tk. 1,000/- will be imposed if 70% Tuition Fee and Trimester Fee is not paid within this date.",
-		Date:    time.Date(2024, time.March, 12, 0, 0, 0, 0, time.UTC),
+		Message: "2nd installment: A fine of Tk. 500/- will be imposed if 70% Tuition Fee and Trimester Fee is not paid within this date.",
+		Date:    time.Date(2024, time.December, 15, 0, 0, 0, 0, time.UTC),
 		Color:   0xF9F07A,
 	},
 
 	{
 		Index:   2,
-		Message: "3rd installment: A fine of Tk. 1,000/- will be imposed if 100% Tuition Fee and Trimester Fee is not paid within this date.",
-		Date:    time.Date(2024, time.April, 22, 0, 0, 0, 0, time.UTC),
+		Message: "3rd installment: A fine of Tk. 500/- will be imposed if 100% Tuition Fee and Trimester Fee is not paid within this date.",
+		Date:    time.Date(2025, time.January, 13, 0, 0, 0, 0, time.UTC),
 		Color:   0xF7418F,
 	},
 }
@@ -45,10 +45,10 @@ var installmentHandler = Commnad{
 	},
 
 	Handler: func(op *options) {
-		if true {
-			in_maintainance(op)
-			return
-		}
+		// if true {
+		// 	in_maintainance(op)
+		// 	return
+		// }
 
 		now := time.Now()
 		var nextPayment Installment

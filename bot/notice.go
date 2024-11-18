@@ -210,10 +210,10 @@ func (b *Bot) ScrapNoticesByDepartment(dep uiuscraper.Department, allowDomain st
 		var n models.Notice = models.Notice{
 			ID:         notice.ID,
 			Title:      notice.Title,
-			Image:      notice.Image,
-			Date:       notice.Date,
-			Link:       notice.Link,
 			Summary:    notice.Summary,
+			Image:      notice.Image,
+			Link:       notice.Link,
+			Date:       notice.Date,
 			Department: models.Department(notice.Department),
 		}
 
@@ -224,15 +224,16 @@ func (b *Bot) ScrapNoticesByDepartment(dep uiuscraper.Department, allowDomain st
 		// send it to Unizim app server
 		err := NoticePushToUnizim(&NoticePayload{
 			DocumentID: "unique()",
-			Data: NoticeBoyd{
+			Data: NoticeBody{
 				HashID:     n.ID,
 				Title:      n.Title,
 				Summary:    n.Summary,
 				Image:      n.Image,
+				Link:       n.Link,
 				Date:       n.Date.Format(time.RFC3339),
 				Department: string(n.Department),
 			},
-		})
+		}, true)
 
 		if err != nil {
 			log.Error().Err(err).Msg("Error sending the notice to Unizim app server")

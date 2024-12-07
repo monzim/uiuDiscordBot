@@ -5,7 +5,9 @@ const (
 	// SPRING_24_FIN = "24_SPRING_FINAL"
 
 	// SUMMER_24_MID = "24_SUMMER_MID"
-	FINAL_SUMMER_24 = "24_SUMMER_FINAL"
+	// FINAL_SUMMER_24 = "24_SUMMER_FINAL"
+	// TODO: check this if you are changing the
+	FALL_MID_24 = "24_FALL_MID"
 )
 
 /*

@@ -16,11 +16,6 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-const (
-	// SUMMER_24_MID = "24_SUMMER_MID"
-	FINAL_SUMMER_24 = "24_SUMMER_FINAL"
-)
-
 func AddExamsToDatabase() {
 	log.Logger = log.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 	err := godotenv.Load()
@@ -43,7 +38,7 @@ func AddExamsToDatabase() {
 	}
 
 	// convert the exam time csv to json
-	exams, err := CsvToJSON(FINAL_SUMMER_24, fmt.Sprintf("%s.csv", FINAL_SUMMER_24), fmt.Sprintf("%s.json", FINAL_SUMMER_24))
+	exams, err := CsvToJSON(models.FALL_MID_24, fmt.Sprintf("%s.csv", models.FALL_MID_24), fmt.Sprintf("%s.json", models.FALL_MID_24))
 	if err != nil {
 		log.Error().Err(err).Msg("Error converting the csv to json")
 	}
